@@ -4,12 +4,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabNavigator from './BottomTabNavigator';
 import TournamentDetailScreen from '../screens/TournamentDetailScreen';
 import MatchDetailScreen from '../screens/MatchDetailScreen';
+import NewsDetailScreen from '../screens/NewsDetailScreen';
 import Navbar from '../components/Navbar';
 
 export type RootStackParamList = {
   Main: undefined;
   TournamentDetail: { name: string; subtitle?: string };
   MatchDetail: { team1: string; team2: string };
+  NewsDetail: { storyId: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -35,6 +37,11 @@ export default function RootNavigator() {
       <Stack.Screen
         name="MatchDetail"
         component={MatchDetailScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="NewsDetail"
+        component={NewsDetailScreen}
         options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>

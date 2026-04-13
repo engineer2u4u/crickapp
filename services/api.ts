@@ -2,8 +2,13 @@ import { RAPIDAPI_KEY, RAPIDAPI_HOST } from '@env';
 
 const BASE_URL = `https://${RAPIDAPI_HOST}`;
 
-const headers = {
+const headers: Record<string, string> = {
   'Content-Type': 'application/json',
+  'x-rapidapi-key': RAPIDAPI_KEY,
+  'x-rapidapi-host': RAPIDAPI_HOST,
+};
+
+const imgHeaders: Record<string, string> = {
   'x-rapidapi-key': RAPIDAPI_KEY,
   'x-rapidapi-host': RAPIDAPI_HOST,
 };
@@ -110,4 +115,29 @@ export function getNewsDetail(newsId: number) {
 
 export function getNewsTopics() {
   return request('/news/v1/topics');
+}
+
+// ─── Images ──────────────────────────────────────────────
+
+export function getImageUrl(imageId: number | string): string {
+  return `${BASE_URL}/img/v1/i1/c${imageId}/i.jpg`;
+}
+
+export const imageHeaders = imgHeaders;
+
+/** Fetch image as base64 data URI (workaround for RN Image not sending headers on Android) */
+export async function fetchImageBase64(imageId: number | string): Promise<string | null> {
+  try {
+    const res = await fetch(getImageUrl(imageId), { headers: imgHeaders });
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
 }

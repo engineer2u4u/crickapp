@@ -4,38 +4,27 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import Icon from 'react-native-vector-icons/Ionicons';
+import type { SeriesItem } from '../services/types';
 
-type League = {
-  country: string;
-  name: string;
-  stage: string;
-  accentColor: string;
+type Props = {
+  series?: SeriesItem[];
+  title?: string;
 };
 
-const LEAGUES: League[] = [
-  {
-    country: 'ENGLAND',
-    name: 'Vitality T20 Blast',
-    stage: 'Round 12 of 18',
-    accentColor: '#1B5E20',
-  },
-  {
-    country: 'AUSTRALIA',
-    name: 'Big Bash League',
-    stage: 'Semi Finals',
-    accentColor: '#2E7D32',
-  },
-  {
-    country: 'WEST INDIES',
-    name: 'Caribbean Premier League',
-    stage: 'Group Stage',
-    accentColor: '#C62828',
-  },
-];
+function formatDate(ts: string): string {
+  return new Date(Number(ts)).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+}
 
-function LeagueCard({ league }: { league: League }) {
+function LeagueCard({ league }: { league: SeriesItem }) {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const isActive =
+    Number(league.startDt) <= Date.now() && Number(league.endDt) >= Date.now();
+  const accentColor = isActive ? '#1B5E20' : '#9E9E9E';
 
   return (
     <TouchableOpacity
@@ -44,22 +33,27 @@ function LeagueCard({ league }: { league: League }) {
       onPress={() =>
         navigation.navigate('TournamentDetail', {
           name: league.name,
-          subtitle: league.country,
+          subtitle: `${formatDate(league.startDt)} - ${formatDate(league.endDt)}`,
         })
       }
     >
       {/* Left Accent Bar */}
-      <View className="w-1" style={{ backgroundColor: league.accentColor }} />
+      <View className="w-1" style={{ backgroundColor: accentColor }} />
 
       {/* Content */}
       <View className="flex-1 p-4">
-        <Text className="text-muted text-xs tracking-widest mb-1 font-body">
-          {league.country}
-        </Text>
+        {isActive && (
+          <View className="flex-row items-center mb-1">
+            <View className="w-1.5 h-1.5 rounded-full bg-primary mr-1.5" />
+            <Text className="text-primary text-xs font-bold font-body">LIVE</Text>
+          </View>
+        )}
         <Text className="text-foreground text-base font-bold font-heading">
           {league.name}
         </Text>
-        <Text className="text-muted text-sm mt-1 font-body">{league.stage}</Text>
+        <Text className="text-muted text-sm mt-1 font-body">
+          {formatDate(league.startDt)} – {formatDate(league.endDt)}
+        </Text>
       </View>
 
       {/* Arrow */}
@@ -70,15 +64,28 @@ function LeagueCard({ league }: { league: League }) {
   );
 }
 
-export default function OngoingLeagues() {
+export default function OngoingLeagues({ series, title }: Props) {
+  const list = series ?? [];
+
+  if (list.length === 0) {
+    return (
+      <View className="px-4 mt-6">
+        <Text className="text-muted text-sm font-body text-center">
+          No leagues found
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View className="px-4 mt-6">
+      {/* Section Header */}
       <Text className="text-foreground text-lg font-bold font-heading mb-3">
-        Other Ongoing Leagues
+        {title ?? 'Other Ongoing Leagues'}
       </Text>
 
-      {LEAGUES.map((league) => (
-        <LeagueCard key={league.name} league={league} />
+      {list.map((league) => (
+        <LeagueCard key={league.id} league={league} />
       ))}
     </View>
   );

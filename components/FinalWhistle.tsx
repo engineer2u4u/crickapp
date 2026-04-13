@@ -3,10 +3,29 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
+import { formatScore, formatOvers, type MatchData } from '../services/types';
+import CImage from './CImage';
 
-export default function FinalWhistle() {
+type Props = {
+  match?: MatchData;
+};
+
+export default function FinalWhistle({ match }: Props) {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const info = match?.matchInfo;
+  const t1 = info?.team1;
+  const t2 = info?.team2;
+  const t1Score = match?.matchScore?.team1Score?.inngs1;
+  const t2Score = match?.matchScore?.team2Score?.inngs1;
+
+  const team1Name = t1?.teamSName ?? 'NZ';
+  const team2Name = t2?.teamSName ?? 'PAK';
+  const score1 = t1Score ? formatScore(t1Score) : '179/6';
+  const score2 = t2Score ? formatScore(t2Score) : '142/9';
+  const seriesName = info?.seriesName ?? 'IND TEST';
+  const status = info?.status ?? 'NZ won by 37 runs';
 
   return (
     <View className="mt-6 px-4">
@@ -27,25 +46,32 @@ export default function FinalWhistle() {
         className="bg-card rounded-2xl p-4"
         activeOpacity={0.85}
         onPress={() =>
-          navigation.navigate('MatchDetail', { team1: 'NZ', team2: 'PAK' })
+          navigation.navigate('MatchDetail', { team1: team1Name, team2: team2Name })
         }
       >
         {/* Format Badge */}
         <View className="bg-surface self-start rounded-full px-3 py-1 mb-3">
           <Text className="text-xs text-muted tracking-widest font-body">
-            IND TEST &bull; COMPLETED
+            {seriesName} &bull; COMPLETED
           </Text>
         </View>
 
         {/* Scores */}
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-row items-center">
-            <Text className="text-xl mr-2">&#127475;&#127487;</Text>
+            {t1 ? (
+              <CImage
+                imageId={t1.imageId}
+                className="w-6 h-6 rounded-full mr-2"
+              />
+            ) : (
+              <Text className="text-xl mr-2">&#127475;&#127487;</Text>
+            )}
             <Text className="text-foreground font-bold text-sm mr-2 font-body">
-              NZ
+              {team1Name}
             </Text>
             <Text className="text-foreground text-xl font-bold font-heading">
-              179/6
+              {score1}
             </Text>
           </View>
 
@@ -53,18 +79,25 @@ export default function FinalWhistle() {
 
           <View className="flex-row items-center">
             <Text className="text-foreground text-xl font-bold font-heading">
-              142/9
+              {score2}
             </Text>
             <Text className="text-foreground font-bold text-sm ml-2 mr-2 font-body">
-              PAK
+              {team2Name}
             </Text>
-            <Text className="text-xl">&#127477;&#127472;</Text>
+            {t2 ? (
+              <CImage
+                imageId={t2.imageId}
+                className="w-6 h-6 rounded-full"
+              />
+            ) : (
+              <Text className="text-xl">&#127477;&#127472;</Text>
+            )}
           </View>
         </View>
 
         {/* Result */}
         <Text className="text-muted text-xs mt-1 font-body">
-          NZ won by 37 runs
+          {status}
         </Text>
 
         {/* Actions */}
