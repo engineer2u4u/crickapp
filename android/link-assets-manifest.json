@@ -1,0 +1,37 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Lexend-Bold.ttf",
+      "sha1": "552e579b53beb3844ad46c2072b3664bf0d6d31f"
+    },
+    {
+      "path": "assets/fonts/Lexend-Medium.ttf",
+      "sha1": "6e6d8dee6c43ab50b884d83f65a6e9746bb7e04c"
+    },
+    {
+      "path": "assets/fonts/Lexend-Regular.ttf",
+      "sha1": "be6350333a8b6bafa17c3da3490102d9d1637561"
+    },
+    {
+      "path": "assets/fonts/Lexend-SemiBold.ttf",
+      "sha1": "3dab90309d368963e179aa32447b42181833844a"
+    },
+    {
+      "path": "assets/fonts/Manrope-Bold.ttf",
+      "sha1": "a1f45b2c111eb4d0a28c230bf8b26dddf1d7f9f1"
+    },
+    {
+      "path": "assets/fonts/Manrope-Medium.ttf",
+      "sha1": "0c05f43dcebda245382fdf7e635a4c4fd0749e17"
+    },
+    {
+      "path": "assets/fonts/Manrope-Regular.ttf",
+      "sha1": "63d42623e23acdcfa64139f9ec00c5bc1e469182"
+    },
+    {
+      "path": "assets/fonts/Manrope-SemiBold.ttf",
+      "sha1": "8b25bc3ea12facdf9f1f0a3287a0104e34b09358"
+    }
+  ]
+}
