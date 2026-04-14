@@ -106,7 +106,7 @@ function TeamSection({ team }: { team: Team }) {
   const hasRoster = team.roster.length > 0;
 
   return (
-    <View className="bg-card rounded-2xl mb-3 overflow-hidden">
+    <View className="bg-white dark:bg-dark-card rounded-2xl mb-3 overflow-hidden">
       <TouchableOpacity
         className="flex-row items-center p-4"
         onPress={() => hasRoster && setExpanded(!expanded)}
@@ -114,10 +114,10 @@ function TeamSection({ team }: { team: Team }) {
       >
         <TeamLogo short={team.short} color={team.color} />
         <View className="flex-1">
-          <Text className="text-foreground text-sm font-bold font-heading">
+          <Text className="text-gray-900 dark:text-white text-sm font-bold font-heading">
             {team.name}
           </Text>
-          <Text className="text-muted text-xs font-body mt-0.5">
+          <Text className="text-gray-500 dark:text-gray-400 text-xs font-body mt-0.5">
             {team.subtitle}
           </Text>
         </View>
@@ -143,13 +143,13 @@ function TeamSection({ team }: { team: Team }) {
               {category.players.map((player) => (
                 <View
                   key={player.name}
-                  className="flex-row items-center justify-between py-2 border-b border-border"
+                  className="flex-row items-center justify-between py-2 border-b border-gray-200 dark:border-dark-surface"
                 >
-                  <Text className="text-foreground text-sm font-body">
+                  <Text className="text-gray-900 dark:text-white text-sm font-body">
                     {player.name}
                   </Text>
                   {player.badge && (
-                    <Text className="text-muted text-xs tracking-wider font-body">
+                    <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-wider font-body">
                       {player.badge}
                     </Text>
                   )}
@@ -174,10 +174,10 @@ export default function SquadRoster() {
     <View className="px-4 mt-2 mb-4">
       {/* Header */}
       <View className="items-center mb-4">
-        <Text className="text-muted text-xs tracking-widest font-body mb-1">
+        <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-widest font-body mb-1">
           INDIAN PREMIER LEAGUE 2026
         </Text>
-        <Text className="text-foreground text-xl font-bold font-heading text-center">
+        <Text className="text-gray-900 dark:text-white text-xl font-bold font-heading text-center">
           OFFICIAL ROSTERS
         </Text>
       </View>

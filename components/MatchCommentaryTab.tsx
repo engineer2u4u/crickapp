@@ -138,8 +138,8 @@ const EVENT_COLORS: Record<string, { bg: string; text: string }> = {
   four: { bg: 'bg-primary/20', text: 'text-primary' },
   six: { bg: 'bg-primary/20', text: 'text-primary' },
   wicket: { bg: 'bg-live/20', text: 'text-live' },
-  dot: { bg: 'bg-surface', text: 'text-muted' },
-  run: { bg: 'bg-surface', text: 'text-foreground' },
+  dot: { bg: 'bg-gray-200 dark:bg-dark-surface', text: 'text-gray-500 dark:text-gray-400' },
+  run: { bg: 'bg-gray-200 dark:bg-dark-surface', text: 'text-gray-900 dark:text-white' },
   wide: { bg: 'bg-secondary/20', text: 'text-secondary' },
   noball: { bg: 'bg-secondary/20', text: 'text-secondary' },
 };
@@ -159,7 +159,7 @@ function BallCard({ event }: { event: BallEvent }) {
       {/* Detail */}
       <View className="flex-1">
         <View className="flex-row items-center mb-1">
-          <Text className="text-foreground text-sm font-bold font-body">
+          <Text className="text-gray-900 dark:text-white text-sm font-bold font-body">
             {event.bowler} to {event.batter}
           </Text>
           <View className={`ml-2 rounded-full px-2 py-0.5 ${colors.bg}`}>
@@ -168,7 +168,7 @@ function BallCard({ event }: { event: BallEvent }) {
             </Text>
           </View>
         </View>
-        <Text className="text-muted text-xs font-body leading-4">
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body leading-4">
           {event.detail}
         </Text>
       </View>
@@ -180,15 +180,15 @@ export default function MatchCommentaryTab() {
   return (
     <View className="px-4 mt-4 mb-6">
       {/* Win Probability */}
-      <View className="bg-card rounded-2xl p-4 mb-4">
-        <Text className="text-muted text-xs tracking-widest font-body mb-2">
+      <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4">
+        <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-widest font-body mb-2">
           WIN PROBABILITY
         </Text>
         <View className="flex-row items-center mb-2">
           <Text className="text-primary text-sm font-bold font-body w-12">
             CSK
           </Text>
-          <View className="flex-1 h-3 bg-surface rounded-full overflow-hidden mx-2">
+          <View className="flex-1 h-3 bg-gray-200 dark:bg-dark-surface rounded-full overflow-hidden mx-2">
             <View
               className="h-full bg-primary rounded-full"
               style={{ width: '68%' }}
@@ -199,14 +199,14 @@ export default function MatchCommentaryTab() {
           </Text>
         </View>
         <View className="flex-row items-center">
-          <Text className="text-muted text-sm font-bold font-body w-12">MI</Text>
-          <View className="flex-1 h-3 bg-surface rounded-full overflow-hidden mx-2">
+          <Text className="text-gray-500 dark:text-gray-400 text-sm font-bold font-body w-12">MI</Text>
+          <View className="flex-1 h-3 bg-gray-200 dark:bg-dark-surface rounded-full overflow-hidden mx-2">
             <View
               className="h-full bg-secondary rounded-full"
               style={{ width: '32%' }}
             />
           </View>
-          <Text className="text-muted text-sm font-bold font-body w-10 text-right">
+          <Text className="text-gray-500 dark:text-gray-400 text-sm font-bold font-body w-10 text-right">
             32%
           </Text>
         </View>
@@ -216,19 +216,19 @@ export default function MatchCommentaryTab() {
       {COMMENTARY.map((over) => (
         <View key={over.over} className="mb-4">
           {/* Over Summary */}
-          <View className="bg-card rounded-xl p-3 mb-3 flex-row items-center justify-between">
+          <View className="bg-white dark:bg-dark-card rounded-xl p-3 mb-3 flex-row items-center justify-between">
             <View className="flex-row items-center">
               <View className="bg-primary w-8 h-8 rounded-full items-center justify-center mr-3">
                 <Text className="text-white text-xs font-bold">
                   {over.over}
                 </Text>
               </View>
-              <Text className="text-foreground text-sm font-bold font-body">
+              <Text className="text-gray-900 dark:text-white text-sm font-bold font-body">
                 {over.summary}
               </Text>
             </View>
-            <View className="bg-surface rounded-full px-2.5 py-0.5">
-              <Text className="text-foreground text-xs font-bold font-body">
+            <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-2.5 py-0.5">
+              <Text className="text-gray-900 dark:text-white text-xs font-bold font-body">
                 {over.totalScore}
               </Text>
             </View>

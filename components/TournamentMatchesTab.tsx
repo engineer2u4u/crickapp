@@ -92,7 +92,7 @@ function StatusBadge({ status }: { status: Match['status'] }) {
   const config = {
     live: { bg: 'bg-live/15', text: 'text-live', label: 'LIVE' },
     upcoming: { bg: 'bg-primary/15', text: 'text-primary', label: 'UPCOMING' },
-    completed: { bg: 'bg-surface', text: 'text-muted', label: 'COMPLETED' },
+    completed: { bg: 'bg-gray-200 dark:bg-dark-surface', text: 'text-gray-500 dark:text-gray-400', label: 'COMPLETED' },
   }[status];
 
   return (
@@ -108,7 +108,7 @@ function MatchCard({ match }: { match: Match }) {
 
   return (
     <TouchableOpacity
-      className="bg-card rounded-2xl p-4 mb-2"
+      className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-2"
       activeOpacity={0.85}
       onPress={() =>
         navigation.navigate('MatchDetail', {
@@ -119,7 +119,7 @@ function MatchCard({ match }: { match: Match }) {
     >
       {/* Top: venue + status */}
       <View className="flex-row items-center justify-between mb-3">
-        <Text className="text-muted text-xs font-body flex-1 mr-2" numberOfLines={1}>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body flex-1 mr-2" numberOfLines={1}>
           {match.venue}
         </Text>
         <StatusBadge status={match.status} />
@@ -130,26 +130,26 @@ function MatchCard({ match }: { match: Match }) {
         {/* Team 1 */}
         <View className="flex-row items-center flex-1">
           <TeamBadge short={match.team1.short} color={match.team1.color} />
-          <Text className="text-foreground font-bold text-sm font-body ml-2">
+          <Text className="text-gray-900 dark:text-white font-bold text-sm font-body ml-2">
             {match.team1.short}
           </Text>
           {match.team1.score && (
-            <Text className="text-foreground text-base font-bold font-heading ml-auto">
+            <Text className="text-gray-900 dark:text-white text-base font-bold font-heading ml-auto">
               {match.team1.score}
             </Text>
           )}
         </View>
 
-        <Text className="text-muted text-xs font-bold mx-3">vs</Text>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-bold mx-3">vs</Text>
 
         {/* Team 2 */}
         <View className="flex-row items-center flex-1">
           {match.team2.score && (
-            <Text className="text-foreground text-base font-bold font-heading mr-auto">
+            <Text className="text-gray-900 dark:text-white text-base font-bold font-heading mr-auto">
               {match.team2.score}
             </Text>
           )}
-          <Text className="text-foreground font-bold text-sm font-body mr-2 ml-auto">
+          <Text className="text-gray-900 dark:text-white font-bold text-sm font-body mr-2 ml-auto">
             {match.team2.short}
           </Text>
           <TeamBadge short={match.team2.short} color={match.team2.color} />
@@ -158,7 +158,7 @@ function MatchCard({ match }: { match: Match }) {
 
       {/* Result or Time */}
       {match.result && (
-        <Text className="text-muted text-xs font-body mt-2">{match.result}</Text>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body mt-2">{match.result}</Text>
       )}
       {match.time && (
         <Text className="text-primary text-xs font-bold font-body mt-2">
@@ -175,7 +175,7 @@ export default function TournamentMatchesTab() {
       {MATCHES.map((group) => (
         <View key={group.date} className="mb-4">
           {/* Date Header */}
-          <Text className="text-muted text-xs font-bold tracking-widest mb-2 font-body">
+          <Text className="text-gray-500 dark:text-gray-400 text-xs font-bold tracking-widest mb-2 font-body">
             {group.date.toUpperCase()}
           </Text>
 

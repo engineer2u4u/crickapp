@@ -28,7 +28,7 @@ function TeamRow({
       />
       <Text
         className={`text-sm flex-1 font-body ${
-          isBatting ? 'text-foreground font-bold' : 'text-muted'
+          isBatting ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-500 dark:text-gray-400'
         }`}
       >
         {team.teamSName}
@@ -36,7 +36,7 @@ function TeamRow({
       {score ? (
         <Text
           className={`text-base font-heading ${
-            isBatting ? 'text-foreground font-bold' : 'text-muted'
+            isBatting ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
           {score}
@@ -58,7 +58,7 @@ export default function MatchCardApi({ match, variant = 'full' }: Props) {
 
   return (
     <TouchableOpacity
-      className="bg-card rounded-2xl p-4 mb-2"
+      className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-2"
       activeOpacity={0.85}
       onPress={() =>
         navigation.navigate('MatchDetail', {
@@ -69,7 +69,7 @@ export default function MatchCardApi({ match, variant = 'full' }: Props) {
     >
       {/* Top row: series + status */}
       <View className="flex-row items-center justify-between mb-1">
-        <Text className="text-muted text-xs font-body flex-1 mr-2" numberOfLines={1}>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body flex-1 mr-2" numberOfLines={1}>
           {variant === 'full' ? matchInfo.seriesName : matchInfo.matchDesc}
         </Text>
         {isLive && (
@@ -79,8 +79,8 @@ export default function MatchCardApi({ match, variant = 'full' }: Props) {
           </View>
         )}
         {isComplete && (
-          <View className="bg-surface rounded-full px-2 py-0.5">
-            <Text className="text-muted text-xs font-bold">
+          <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-2 py-0.5">
+            <Text className="text-gray-500 dark:text-gray-400 text-xs font-bold">
               {matchInfo.stateTitle}
             </Text>
           </View>
@@ -106,14 +106,14 @@ export default function MatchCardApi({ match, variant = 'full' }: Props) {
 
       {/* Status */}
       {matchInfo.status && (
-        <Text className="text-muted text-xs font-body mt-1" numberOfLines={1}>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body mt-1" numberOfLines={1}>
           {matchInfo.status}
         </Text>
       )}
 
       {/* Venue (full variant only) */}
       {variant === 'full' && matchInfo.venueInfo && (
-        <Text className="text-muted text-xs font-body mt-0.5" numberOfLines={1}>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body mt-0.5" numberOfLines={1}>
           {matchInfo.venueInfo.ground}, {matchInfo.venueInfo.city}
         </Text>
       )}

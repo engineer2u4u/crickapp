@@ -43,13 +43,13 @@ function InfoRow({
   value: string;
 }) {
   return (
-    <View className="flex-row items-start py-2.5 border-b border-border">
+    <View className="flex-row items-start py-2.5 border-b border-gray-200 dark:border-dark-surface">
       <Icon name={icon} size={16} color="#9E9E9E" />
       <View className="ml-3 flex-1">
-        <Text className="text-muted text-xs tracking-wider font-body mb-0.5">
+        <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-wider font-body mb-0.5">
           {label}
         </Text>
-        <Text className="text-foreground text-sm font-body">{value}</Text>
+        <Text className="text-gray-900 dark:text-white text-sm font-body">{value}</Text>
       </View>
     </View>
   );
@@ -59,10 +59,10 @@ export default function MatchInfoTab() {
   return (
     <View className="px-4 mt-4 mb-6">
       {/* Match Info */}
-      <Text className="text-foreground text-sm font-bold tracking-widest mb-2 font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-2 font-heading">
         MATCH INFO
       </Text>
-      <View className="bg-card rounded-2xl p-4 mb-4">
+      <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4">
         <InfoRow
           icon="location-outline"
           label="VENUE"
@@ -86,7 +86,7 @@ export default function MatchInfoTab() {
       </View>
 
       {/* Head to Head */}
-      <Text className="text-foreground text-sm font-bold tracking-widest mb-2 font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-2 font-heading">
         HEAD TO HEAD
       </Text>
       <View className="bg-primary rounded-2xl p-5 items-center mb-4">
@@ -119,22 +119,22 @@ export default function MatchInfoTab() {
       </View>
 
       {/* Playing XI */}
-      <Text className="text-foreground text-sm font-bold tracking-widest mb-2 font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-2 font-heading">
         PLAYING XI
       </Text>
-      <View className="bg-card rounded-2xl p-4 mb-4">
+      <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4">
         {/* Team Headers */}
-        <View className="flex-row mb-3 pb-2 border-b border-border">
+        <View className="flex-row mb-3 pb-2 border-b border-gray-200 dark:border-dark-surface">
           <View className="flex-1 flex-row items-center">
             <View className="w-6 h-6 bg-blue-700 rounded-full items-center justify-center mr-2">
               <Text className="text-white text-xs font-bold">M</Text>
             </View>
-            <Text className="text-foreground text-xs font-bold font-heading">
+            <Text className="text-gray-900 dark:text-white text-xs font-bold font-heading">
               MUMBAI INDIANS
             </Text>
           </View>
           <View className="flex-1 flex-row items-center justify-end">
-            <Text className="text-foreground text-xs font-bold font-heading">
+            <Text className="text-gray-900 dark:text-white text-xs font-bold font-heading">
               SUPER KINGS
             </Text>
             <View className="w-6 h-6 bg-yellow-500 rounded-full items-center justify-center ml-2">
@@ -147,12 +147,12 @@ export default function MatchInfoTab() {
         {PLAYING_XI_1.map((p1, i) => (
           <View
             key={i}
-            className="flex-row py-1.5 border-b border-border"
+            className="flex-row py-1.5 border-b border-gray-200 dark:border-dark-surface"
           >
-            <Text className="flex-1 text-foreground text-xs font-body">
+            <Text className="flex-1 text-gray-900 dark:text-white text-xs font-body">
               {p1}
             </Text>
-            <Text className="flex-1 text-foreground text-xs font-body text-right">
+            <Text className="flex-1 text-gray-900 dark:text-white text-xs font-body text-right">
               {PLAYING_XI_2[i] ?? ''}
             </Text>
           </View>
@@ -160,24 +160,24 @@ export default function MatchInfoTab() {
       </View>
 
       {/* Bench */}
-      <Text className="text-foreground text-sm font-bold tracking-widest mb-2 font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-2 font-heading">
         BENCH
       </Text>
-      <View className="bg-card rounded-2xl p-4">
-        <View className="flex-row mb-2 pb-2 border-b border-border">
-          <Text className="flex-1 text-muted text-xs font-bold font-body">
+      <View className="bg-white dark:bg-dark-card rounded-2xl p-4">
+        <View className="flex-row mb-2 pb-2 border-b border-gray-200 dark:border-dark-surface">
+          <Text className="flex-1 text-gray-500 dark:text-gray-400 text-xs font-bold font-body">
             MI
           </Text>
-          <Text className="flex-1 text-muted text-xs font-bold font-body text-right">
+          <Text className="flex-1 text-gray-500 dark:text-gray-400 text-xs font-bold font-body text-right">
             CSK
           </Text>
         </View>
         {BENCH_1.map((p1, i) => (
           <View key={i} className="flex-row py-1.5">
-            <Text className="flex-1 text-foreground text-xs font-body">
+            <Text className="flex-1 text-gray-900 dark:text-white text-xs font-body">
               {p1}
             </Text>
-            <Text className="flex-1 text-foreground text-xs font-body text-right">
+            <Text className="flex-1 text-gray-900 dark:text-white text-xs font-body text-right">
               {BENCH_2[i] ?? ''}
             </Text>
           </View>

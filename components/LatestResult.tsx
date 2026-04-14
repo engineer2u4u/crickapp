@@ -22,12 +22,12 @@ export default function LatestResult() {
 
   return (
     <View className="px-4 mt-4">
-      <Text className="text-foreground text-sm font-bold tracking-widest mb-3 font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
         LATEST RESULT
       </Text>
 
       <TouchableOpacity
-        className="bg-card rounded-2xl p-4"
+        className="bg-white dark:bg-dark-card rounded-2xl p-4"
         activeOpacity={0.85}
         onPress={() =>
           navigation.navigate('MatchDetail', { team1: 'CSK', team2: 'DC' })
@@ -38,7 +38,7 @@ export default function LatestResult() {
           <View className="flex-row items-center flex-1">
             <TeamLogo short="CSK" color="#FFCB05" />
             <View className="ml-3">
-              <Text className="text-foreground font-bold text-sm font-body">
+              <Text className="text-gray-900 dark:text-white font-bold text-sm font-body">
                 CSK
               </Text>
               <Text className="text-primary text-xl font-bold font-heading">
@@ -47,14 +47,14 @@ export default function LatestResult() {
             </View>
           </View>
 
-          <Text className="text-muted font-bold mx-2">vs</Text>
+          <Text className="text-gray-500 dark:text-gray-400 font-bold mx-2">vs</Text>
 
           <View className="flex-row items-center flex-1 justify-end">
             <View className="items-end mr-3">
-              <Text className="text-foreground font-bold text-sm font-body">
+              <Text className="text-gray-900 dark:text-white font-bold text-sm font-body">
                 DC
               </Text>
-              <Text className="text-foreground text-xl font-bold font-heading">
+              <Text className="text-gray-900 dark:text-white text-xl font-bold font-heading">
                 186/8
               </Text>
             </View>
@@ -63,15 +63,15 @@ export default function LatestResult() {
         </View>
 
         {/* Player of the Match */}
-        <View className="border-t border-border pt-3 flex-row items-center">
+        <View className="border-t border-gray-200 dark:border-dark-surface pt-3 flex-row items-center">
           <View className="w-9 h-9 bg-tertiary/20 rounded-full items-center justify-center mr-3">
             <Icon name="person" size={16} color="#2E7D32" />
           </View>
           <View>
-            <Text className="text-foreground text-sm font-bold font-heading">
+            <Text className="text-gray-900 dark:text-white text-sm font-bold font-heading">
               M. JARDEN
             </Text>
-            <Text className="text-muted text-xs font-body">
+            <Text className="text-gray-500 dark:text-gray-400 text-xs font-body">
               Player of the Match • 4/28 (4 ov)
             </Text>
           </View>

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useColorScheme } from 'nativewind';
-import Icon from 'react-native-vector-icons/Ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
+import ScreenHeader from '../components/ScreenHeader';
 import MatchHero from '../components/MatchHero';
 import MatchInfoTab from '../components/MatchInfoTab';
 import MatchScorecardTab from '../components/MatchScorecardTab';
@@ -14,34 +12,13 @@ type Props = NativeStackScreenProps<RootStackParamList, 'MatchDetail'>;
 
 const TABS = ['Info', 'Scorecard', 'Commentary'];
 
-export default function MatchDetailScreen({ navigation, route }: Props) {
-  const insets = useSafeAreaInsets();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
+export default function MatchDetailScreen({ route }: Props) {
   const [activeTab, setActiveTab] = useState('Info');
-  const iconColor = isDark ? '#FFFFFF' : '#1A1A1A';
   const { team1, team2 } = route.params;
 
   return (
-    <View className="flex-1 bg-bg">
-      {/* Header */}
-      <View
-        className="bg-card border-b border-border px-4 pb-3 flex-row items-center justify-between"
-        style={{ paddingTop: insets.top + 8 }}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          className="w-8 items-start"
-        >
-          <Icon name="chevron-back" size={24} color={iconColor} />
-        </TouchableOpacity>
-        <Text className="text-foreground text-base font-bold font-heading tracking-wider">
-          MATCH CENTER
-        </Text>
-        <TouchableOpacity className="w-8 items-end">
-          <Icon name="share-outline" size={22} color={iconColor} />
-        </TouchableOpacity>
-      </View>
+    <View className="flex-1 bg-neutral dark:bg-dark-bg">
+      <ScreenHeader title="MATCH CENTER" rightIcon="share-outline" />
 
       {/* Match Hero */}
       <MatchHero
@@ -65,7 +42,7 @@ export default function MatchDetailScreen({ navigation, route }: Props) {
       />
 
       {/* Tab Bar */}
-      <View className="bg-card flex-row border-b border-border mt-3">
+      <View className="bg-white dark:bg-dark-card flex-row border-b border-gray-200 dark:border-dark-surface mt-3">
         {TABS.map((tab) => (
           <TouchableOpacity
             key={tab}
@@ -76,7 +53,7 @@ export default function MatchDetailScreen({ navigation, route }: Props) {
           >
             <Text
               className={`text-xs font-bold tracking-wider ${
-                activeTab === tab ? 'text-primary' : 'text-muted'
+                activeTab === tab ? 'text-primary' : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               {tab.toUpperCase()}

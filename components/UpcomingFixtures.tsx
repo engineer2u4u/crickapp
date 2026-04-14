@@ -25,7 +25,7 @@ export default function UpcomingFixtures({ matches }: Props) {
     <View className="mt-6 px-4">
       {/* Section Header */}
       <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-foreground text-sm font-bold tracking-widest font-heading">
+        <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest font-heading">
           UPCOMING FIXTURES
         </Text>
         <TouchableOpacity>
@@ -36,8 +36,8 @@ export default function UpcomingFixtures({ matches }: Props) {
       </View>
 
       {list.length === 0 && (
-        <View className="bg-card rounded-2xl p-4">
-          <Text className="text-muted text-sm font-body text-center">
+        <View className="bg-white dark:bg-dark-card rounded-2xl p-4">
+          <Text className="text-gray-500 dark:text-gray-400 text-sm font-body text-center">
             No upcoming matches
           </Text>
         </View>
@@ -48,7 +48,7 @@ export default function UpcomingFixtures({ matches }: Props) {
         return (
           <TouchableOpacity
             key={matchInfo.matchId}
-            className="bg-card rounded-2xl p-4 mb-2"
+            className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-2"
             activeOpacity={0.85}
             onPress={() =>
               navigation.navigate('MatchDetail', {
@@ -58,8 +58,8 @@ export default function UpcomingFixtures({ matches }: Props) {
             }
           >
             {/* Tournament Badge */}
-            <View className="bg-surface self-start rounded-full px-3 py-1 mb-3">
-              <Text className="text-xs text-muted tracking-widest font-body">
+            <View className="bg-gray-200 dark:bg-dark-surface self-start rounded-full px-3 py-1 mb-3">
+              <Text className="text-xs text-gray-500 dark:text-gray-400 tracking-widest font-body">
                 {matchInfo.seriesName}
               </Text>
             </View>
@@ -70,11 +70,11 @@ export default function UpcomingFixtures({ matches }: Props) {
                 imageId={matchInfo.team1.imageId}
                 className="w-6 h-6 rounded-full mr-2"
               />
-              <Text className="text-foreground font-bold text-base font-heading">
+              <Text className="text-gray-900 dark:text-white font-bold text-base font-heading">
                 {matchInfo.team1.teamSName}
               </Text>
-              <Text className="text-muted mx-2 font-bold">-</Text>
-              <Text className="text-foreground font-bold text-base font-heading">
+              <Text className="text-gray-500 dark:text-gray-400 mx-2 font-bold">-</Text>
+              <Text className="text-gray-900 dark:text-white font-bold text-base font-heading">
                 {matchInfo.team2.teamSName}
               </Text>
               <CImage
@@ -85,7 +85,7 @@ export default function UpcomingFixtures({ matches }: Props) {
 
             {/* Time */}
             <View className="flex-row items-center justify-between">
-              <Text className="text-muted text-sm font-body">
+              <Text className="text-gray-500 dark:text-gray-400 text-sm font-body">
                 {formatTime(matchInfo.startDate)}
               </Text>
               <View className="bg-primary rounded-full px-4 py-1.5">
@@ -93,7 +93,7 @@ export default function UpcomingFixtures({ matches }: Props) {
                   REMIND
                 </Text>
               </View>
-              <Text className="text-muted text-sm font-body">
+              <Text className="text-gray-500 dark:text-gray-400 text-sm font-body">
                 {matchInfo.matchDesc}
               </Text>
             </View>

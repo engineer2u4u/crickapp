@@ -31,13 +31,13 @@ export default function InsideEdge({ stories }: Props) {
   return (
     <View className="mt-6 px-4">
       {/* Section Header */}
-      <Text className="text-foreground text-sm font-bold tracking-widest mb-3 font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
         THE INSIDE EDGE
       </Text>
 
       {/* Featured Article */}
       <TouchableOpacity
-        className="bg-card rounded-2xl overflow-hidden mb-3"
+        className="bg-white dark:bg-dark-card rounded-2xl overflow-hidden mb-3"
         activeOpacity={0.85}
         onPress={() =>
           navigation.navigate('NewsDetail', { storyId: featured.id })
@@ -71,7 +71,7 @@ export default function InsideEdge({ stories }: Props) {
         </View>
 
         <View className="p-4">
-          <Text className="text-muted text-sm leading-5 font-body" numberOfLines={2}>
+          <Text className="text-gray-500 dark:text-gray-400 text-sm leading-5 font-body" numberOfLines={2}>
             {featured.intro}
           </Text>
         </View>
@@ -81,7 +81,7 @@ export default function InsideEdge({ stories }: Props) {
       {rest.map((story) => (
         <TouchableOpacity
           key={story.id}
-          className="bg-card rounded-2xl p-4 mb-3"
+          className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-3"
           activeOpacity={0.85}
           onPress={() =>
             navigation.navigate('NewsDetail', { storyId: story.id })
@@ -93,11 +93,11 @@ export default function InsideEdge({ stories }: Props) {
               className="w-16 h-16 rounded-xl mr-3"
             />
             <View className="flex-1">
-              <Text className="text-xs text-muted tracking-widest mb-1 font-body">
+              <Text className="text-xs text-gray-500 dark:text-gray-400 tracking-widest mb-1 font-body">
                 {story.context ?? story.storyType}
               </Text>
               <Text
-                className="text-foreground font-bold text-sm font-heading"
+                className="text-gray-900 dark:text-white font-bold text-sm font-heading"
                 numberOfLines={2}
               >
                 {story.hline}

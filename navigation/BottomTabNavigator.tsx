@@ -21,7 +21,7 @@ const TAB_CONFIG: Record<string, { icon: string; label: string }> = {
 
 function CustomTabBar({ state, navigation }: TabBarProps) {
   return (
-    <View className="flex-row justify-around items-center pt-2 pb-6 bg-card border-t border-border">
+    <View className="flex-row justify-around items-center pt-2 pb-6 bg-white dark:bg-dark-card border-t border-gray-200 dark:border-dark-surface">
       {state.routes.map((route: any, index: number) => {
         const isFocused = state.index === index;
         const config = TAB_CONFIG[route.name] ?? {
@@ -57,7 +57,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
             </View>
             <Text
               className={`text-xs font-bold ${
-                isFocused ? 'text-primary' : 'text-muted'
+                isFocused ? 'text-primary' : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               {config.label}

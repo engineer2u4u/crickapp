@@ -46,7 +46,7 @@ function FeaturedCard({ story }: { story: Story }) {
 
   return (
     <TouchableOpacity
-      className="mx-4 mb-4 bg-card rounded-2xl overflow-hidden"
+      className="mx-4 mb-4 bg-white dark:bg-dark-card rounded-2xl overflow-hidden"
       activeOpacity={0.85}
       onPress={() => navigation.navigate('NewsDetail', { storyId: story.id })}
     >
@@ -70,18 +70,18 @@ function FeaturedCard({ story }: { story: Story }) {
               {story.storyType}
             </Text>
           </View>
-          <Text className="text-muted text-xs font-body ml-auto">
+          <Text className="text-gray-500 dark:text-gray-400 text-xs font-body ml-auto">
             {formatTimeAgo(story.pubTime)}
           </Text>
         </View>
 
         {/* Headline */}
-        <Text className="text-foreground text-lg font-bold font-heading leading-6 mb-2">
+        <Text className="text-gray-900 dark:text-white text-lg font-bold font-heading leading-6 mb-2">
           {story.hline}
         </Text>
 
         {/* Intro */}
-        <Text className="text-muted text-sm font-body leading-5" numberOfLines={2}>
+        <Text className="text-gray-500 dark:text-gray-400 text-sm font-body leading-5" numberOfLines={2}>
           {story.intro}
         </Text>
       </View>
@@ -95,7 +95,7 @@ function ArticleRow({ story }: { story: Story }) {
 
   return (
     <TouchableOpacity
-      className="bg-card rounded-2xl overflow-hidden mb-3 mx-4 flex-row"
+      className="bg-white dark:bg-dark-card rounded-2xl overflow-hidden mb-3 mx-4 flex-row"
       activeOpacity={0.85}
       onPress={() => navigation.navigate('NewsDetail', { storyId: story.id })}
     >
@@ -107,17 +107,17 @@ function ArticleRow({ story }: { story: Story }) {
               {story.context}
             </Text>
           )}
-          <Text className="text-muted text-xs font-body">
+          <Text className="text-gray-500 dark:text-gray-400 text-xs font-body">
             {formatTimeAgo(story.pubTime)}
           </Text>
         </View>
         <Text
-          className="text-foreground text-sm font-bold font-heading leading-5 mb-1"
+          className="text-gray-900 dark:text-white text-sm font-bold font-heading leading-5 mb-1"
           numberOfLines={3}
         >
           {story.hline}
         </Text>
-        <Text className="text-muted text-xs font-body" numberOfLines={2}>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body" numberOfLines={2}>
           {story.intro}
         </Text>
       </View>
@@ -164,7 +164,7 @@ export default function NewsScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-bg items-center justify-center">
+      <View className="flex-1 bg-neutral dark:bg-dark-bg items-center justify-center">
         <ActivityIndicator size="large" color="#1B5E20" />
       </View>
     );
@@ -172,8 +172,8 @@ export default function NewsScreen() {
 
   if (error) {
     return (
-      <View className="flex-1 bg-bg items-center justify-center px-6">
-        <Text className="text-muted text-base font-body text-center">{error}</Text>
+      <View className="flex-1 bg-neutral dark:bg-dark-bg items-center justify-center px-6">
+        <Text className="text-gray-500 dark:text-gray-400 text-base font-body text-center">{error}</Text>
         <TouchableOpacity
           className="mt-4 bg-primary rounded-full px-6 py-2"
           onPress={() => fetchNews()}
@@ -189,7 +189,7 @@ export default function NewsScreen() {
 
   return (
     <ScrollView
-      className="flex-1 bg-bg"
+      className="flex-1 bg-neutral dark:bg-dark-bg"
       contentContainerClassName="pb-4 pt-3"
       showsVerticalScrollIndicator={false}
       refreshControl={
@@ -202,7 +202,7 @@ export default function NewsScreen() {
       }
     >
       {/* Header */}
-      <Text className="text-foreground text-xl font-bold font-heading px-4 mb-4">
+      <Text className="text-gray-900 dark:text-white text-xl font-bold font-heading px-4 mb-4">
         Latest News
       </Text>
 
@@ -211,7 +211,7 @@ export default function NewsScreen() {
 
       {/* Headlines */}
       <View className="flex-row justify-between items-center px-4 mb-3">
-        <Text className="text-foreground text-sm font-bold tracking-widest font-heading">
+        <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest font-heading">
           MORE STORIES
         </Text>
       </View>

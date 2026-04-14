@@ -11,15 +11,15 @@ const STATS = [
 export default function TournamentStats() {
   return (
     <View className="px-4 mt-4">
-      <Text className="text-foreground text-sm font-bold tracking-widest mb-3 font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
         TOURNAMENT OVERVIEW
       </Text>
 
       <View className="flex-row flex-wrap -m-1">
         {STATS.map((stat) => (
           <View key={stat.label} className="w-1/2 p-1">
-            <View className="bg-card rounded-xl p-3.5">
-              <Text className="text-muted text-xs tracking-wider font-body mb-1">
+            <View className="bg-white dark:bg-dark-card rounded-xl p-3.5">
+              <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-wider font-body mb-1">
                 {stat.label}
               </Text>
               <View className="flex-row items-center">
@@ -28,7 +28,7 @@ export default function TournamentStats() {
                     <Text className="text-white text-xs font-bold">C</Text>
                   </View>
                 )}
-                <Text className="text-foreground text-2xl font-bold font-heading">
+                <Text className="text-gray-900 dark:text-white text-2xl font-bold font-heading">
                   {stat.value}
                 </Text>
               </View>

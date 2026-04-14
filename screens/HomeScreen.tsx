@@ -25,7 +25,7 @@ export default function HomeScreen() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 bg-bg items-center justify-center">
+      <View className="flex-1 bg-neutral dark:bg-dark-bg items-center justify-center">
         <ActivityIndicator size="large" color="#1B5E20" />
       </View>
     );
@@ -33,7 +33,7 @@ export default function HomeScreen() {
 
   return (
     <ScrollView
-      className="flex-1 bg-bg"
+      className="flex-1 bg-neutral dark:bg-dark-bg"
       contentContainerClassName="pb-4"
       showsVerticalScrollIndicator={false}
       refreshControl={

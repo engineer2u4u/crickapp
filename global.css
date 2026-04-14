@@ -1,33 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer base {
-  :root {
-    /* ── Brand Colors (same in both modes) ── */
-    --color-primary: 27 94 32;         /* #1B5E20 */
-    --color-secondary: 255 109 0;      /* #FF6D00 */
-    --color-tertiary: 46 125 50;       /* #2E7D32 */
-
-    /* ── Theme Colors (light mode) ── */
-    --color-bg: 245 245 245;           /* #F5F5F5 */
-    --color-card: 255 255 255;         /* #FFFFFF */
-    --color-surface: 229 229 229;      /* #E5E5E5 */
-    --color-foreground: 26 26 26;      /* #1A1A1A */
-    --color-muted: 117 117 117;        /* #757575 */
-    --color-border: 229 229 229;       /* #E5E5E5 */
-    --color-live: 229 57 53;           /* #E53935 */
-    --color-accent-light: 187 222 189; /* #BBDEBB */
-  }
-
-  .dark {
-    --color-bg: 18 18 18;              /* #121212 */
-    --color-card: 28 28 28;            /* #1C1C1C */
-    --color-surface: 42 42 42;         /* #2A2A2A */
-    --color-foreground: 255 255 255;   /* #FFFFFF */
-    --color-muted: 158 158 158;        /* #9E9E9E */
-    --color-border: 42 42 42;          /* #2A2A2A */
-    --color-live: 229 57 53;           /* #E53935 */
-    --color-accent-light: 187 222 189;
-  }
-}

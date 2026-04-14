@@ -12,7 +12,7 @@ export default function Navbar() {
 
   return (
     <View
-      className="bg-card border-b border-border px-4 pb-3 flex-row items-center justify-between"
+      className="bg-white dark:bg-dark-card border-b border-gray-200 dark:border-dark-surface px-4 pb-3 flex-row items-center justify-between"
       style={{ paddingTop: insets.top + 8 }}
     >
       {/* Logo */}
@@ -20,7 +20,7 @@ export default function Navbar() {
         <View className="w-8 h-8 bg-primary rounded-full items-center justify-center mr-2">
           <Icon name="baseball" size={16} color="#FFFFFF" />
         </View>
-        <Text className="text-foreground text-lg font-bold font-heading">
+        <Text className="text-gray-900 dark:text-white text-lg font-bold font-heading">
           CrickArena
         </Text>
       </View>

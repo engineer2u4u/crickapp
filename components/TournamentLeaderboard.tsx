@@ -24,7 +24,7 @@ const PURPLE_CAP: Player[] = [
 function LeaderboardRow({ player }: { player: Player }) {
   return (
     <View className="flex-row items-center py-2.5">
-      <Text className="text-muted text-sm w-6 font-body">{player.rank}</Text>
+      <Text className="text-gray-500 dark:text-gray-400 text-sm w-6 font-body">{player.rank}</Text>
       <View
         className="w-7 h-7 rounded-full items-center justify-center mr-3"
         style={{ backgroundColor: player.teamColor }}
@@ -34,12 +34,12 @@ function LeaderboardRow({ player }: { player: Player }) {
         </Text>
       </View>
       <View className="flex-1">
-        <Text className="text-foreground text-sm font-bold font-body">
+        <Text className="text-gray-900 dark:text-white text-sm font-bold font-body">
           {player.name}
         </Text>
-        <Text className="text-muted text-xs font-body">{player.team}</Text>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body">{player.team}</Text>
       </View>
-      <Text className="text-foreground text-sm font-bold font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold font-heading">
         {player.value}
       </Text>
     </View>
@@ -58,7 +58,7 @@ function CapSection({
   players: Player[];
 }) {
   return (
-    <View className="bg-card rounded-2xl p-4 mb-3">
+    <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-3">
       <View className="flex-row items-center mb-2">
         <View
           className="w-3 h-3 rounded-full mr-2"
@@ -81,7 +81,7 @@ function CapSection({
 export default function TournamentLeaderboard() {
   return (
     <View className="px-4 mt-4 mb-4">
-      <Text className="text-foreground text-sm font-bold tracking-widest mb-3 font-heading">
+      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
         LEADERBOARDS
       </Text>
 

@@ -59,6 +59,10 @@ export function getSeriesList(type: 'international' | 'league' | 'domestic' | 'w
   return request(`/series/v1/${type}`);
 }
 
+export function getSeriesArchives(type: 'international' | 'league' | 'domestic' | 'women' = 'league') {
+  return request(`/series/v1/archives/${type}`);
+}
+
 export function getSeriesInfo(seriesId: number) {
   return request(`/series/v1/${seriesId}`);
 }
@@ -81,7 +85,7 @@ export function getPointsTable(seriesId: number) {
 
 // ─── Rankings ─────────────────────────────────────────────
 
-export function getRankings(type: 'batsmen' | 'bowlers' | 'allrounders', format: 'test' | 'odi' | 't20' = 'test') {
+export function getRankings(type: 'batsmen' | 'bowlers' | 'allrounders' | 'teams', format: 'test' | 'odi' | 't20' = 'test') {
   return request(`/stats/v1/rankings/${type}?formatType=${format}`);
 }
 

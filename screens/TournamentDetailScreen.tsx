@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useColorScheme } from 'nativewind';
+import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackScreenProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
+import ScreenHeader from '../components/ScreenHeader';
 import TournamentHero from '../components/TournamentHero';
 import TournamentStats from '../components/TournamentStats';
 import LatestResult from '../components/LatestResult';
@@ -42,7 +35,7 @@ function OverviewContent({ name, subtitle }: { name: string; subtitle?: string }
 
       {/* Participating Squads */}
       <View className="px-4 mt-4 mb-2">
-        <Text className="text-foreground text-sm font-bold tracking-widest mb-3 font-heading">
+        <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
           PARTICIPATING SQUADS
         </Text>
         <View className="flex-row flex-wrap -m-1">
@@ -68,43 +61,22 @@ function StatsPlaceholder() {
   return (
     <View className="items-center justify-center py-20">
       <Icon name="stats-chart-outline" size={48} color="#9E9E9E" />
-      <Text className="text-muted text-base mt-4 font-body">Tournament Stats</Text>
-      <Text className="text-muted text-xs mt-1 font-body">Coming soon</Text>
+      <Text className="text-gray-500 dark:text-gray-400 text-base mt-4 font-body">Tournament Stats</Text>
+      <Text className="text-gray-500 dark:text-gray-400 text-xs mt-1 font-body">Coming soon</Text>
     </View>
   );
 }
 
-export default function TournamentDetailScreen({ navigation, route }: Props) {
-  const insets = useSafeAreaInsets();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
+export default function TournamentDetailScreen({ route }: Props) {
   const [activeTab, setActiveTab] = useState('Overview');
   const { name, subtitle } = route.params;
-  const iconColor = isDark ? '#FFFFFF' : '#1A1A1A';
 
   return (
-    <View className="flex-1 bg-bg">
-      {/* Header */}
-      <View
-        className="bg-card border-b border-border px-4 pb-3 flex-row items-center justify-between"
-        style={{ paddingTop: insets.top + 8 }}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          className="w-8 items-start"
-        >
-          <Icon name="chevron-back" size={24} color={iconColor} />
-        </TouchableOpacity>
-        <Text className="text-foreground text-base font-bold font-heading tracking-wider">
-          TOURNAMENTS
-        </Text>
-        <TouchableOpacity className="w-8 items-end">
-          <Icon name="search-outline" size={22} color={iconColor} />
-        </TouchableOpacity>
-      </View>
+    <View className="flex-1 bg-neutral dark:bg-dark-bg">
+      <ScreenHeader title="TOURNAMENTS" rightIcon="search-outline" />
 
       {/* Tab Bar */}
-      <View className="bg-card flex-row border-b border-border">
+      <View className="bg-white dark:bg-dark-card flex-row border-b border-gray-200 dark:border-dark-surface">
         {TABS.map((tab) => (
           <TouchableOpacity
             key={tab}
@@ -115,7 +87,7 @@ export default function TournamentDetailScreen({ navigation, route }: Props) {
           >
             <Text
               className={`text-xs font-bold tracking-wider ${
-                activeTab === tab ? 'text-primary' : 'text-muted'
+                activeTab === tab ? 'text-primary' : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               {tab.toUpperCase()}
