@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { type MatchData } from '../services/types';
+import { setReminder, cancelReminder, isReminderSet } from '../services/reminders';
 import CImage from './CImage';
 
 type Props = {
@@ -18,14 +19,65 @@ function formatTime(ts: string): string {
 export default function UpcomingFixtures({ matches }: Props) {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [reminderMap, setReminderMap] = useState<Record<number, boolean>>({});
 
   const list = matches?.slice(0, 3) ?? [];
+
+  // Check which matches already have reminders set
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        const map: Record<number, boolean> = {};
+        for (const m of list) {
+          map[m.matchInfo.matchId] = await isReminderSet(m.matchInfo.matchId);
+        }
+        setReminderMap(map);
+      })();
+    }, [matches]),
+  );
+
+  async function handleReminder(m: MatchData) {
+    const { matchInfo } = m;
+    const alreadySet = reminderMap[matchInfo.matchId];
+
+    if (alreadySet) {
+      Alert.alert('Cancel Reminder', `Remove reminder for ${matchInfo.team1.teamSName} vs ${matchInfo.team2.teamSName}?`, [
+        { text: 'Keep', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: async () => {
+            await cancelReminder(matchInfo.matchId);
+            setReminderMap((prev) => ({ ...prev, [matchInfo.matchId]: false }));
+          },
+        },
+      ]);
+      return;
+    }
+
+    const success = await setReminder({
+      matchId: matchInfo.matchId,
+      team1: matchInfo.team1.teamSName,
+      team2: matchInfo.team2.teamSName,
+      seriesName: matchInfo.seriesName,
+      matchDesc: matchInfo.matchDesc,
+      startDate: matchInfo.startDate,
+    });
+
+    if (success) {
+      setReminderMap((prev) => ({ ...prev, [matchInfo.matchId]: true }));
+      Alert.alert(
+        'Reminder Set!',
+        `You'll be notified 15 min before ${matchInfo.team1.teamSName} vs ${matchInfo.team2.teamSName}.`,
+      );
+    }
+  }
 
   return (
     <View className="mt-6 px-4">
       {/* Section Header */}
       <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest font-heading">
+        <Text className="text-primary text-lg font-black italic font-heading">
           UPCOMING FIXTURES
         </Text>
         <TouchableOpacity>
@@ -52,6 +104,7 @@ export default function UpcomingFixtures({ matches }: Props) {
             activeOpacity={0.85}
             onPress={() =>
               navigation.navigate('MatchDetail', {
+                matchId: matchInfo.matchId,
                 team1: matchInfo.team1.teamSName,
                 team2: matchInfo.team2.teamSName,
               })
@@ -88,11 +141,18 @@ export default function UpcomingFixtures({ matches }: Props) {
               <Text className="text-gray-500 dark:text-gray-400 text-sm font-body">
                 {formatTime(matchInfo.startDate)}
               </Text>
-              <View className="bg-primary rounded-full px-4 py-1.5">
+              <TouchableOpacity
+                onPress={() => handleReminder(m)}
+                className={`rounded-full px-4 py-1.5 ${
+                  reminderMap[matchInfo.matchId]
+                    ? 'bg-tertiary'
+                    : 'bg-primary'
+                }`}
+              >
                 <Text className="text-white text-xs font-bold tracking-wider">
-                  REMIND
+                  {reminderMap[matchInfo.matchId] ? 'REMINDED' : 'REMIND'}
                 </Text>
-              </View>
+              </TouchableOpacity>
               <Text className="text-gray-500 dark:text-gray-400 text-sm font-body">
                 {matchInfo.matchDesc}
               </Text>

@@ -31,7 +31,7 @@ export default function InsideEdge({ stories }: Props) {
   return (
     <View className="mt-6 px-4">
       {/* Section Header */}
-      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
+      <Text className="text-primary text-lg font-black italic mb-3 font-heading">
         THE INSIDE EDGE
       </Text>
 

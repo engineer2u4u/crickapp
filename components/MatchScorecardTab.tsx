@@ -1,5 +1,9 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import type { LiveInnings } from '../hooks/useMatchLive';
+
+// ─── Types ───────────────────────────────────────────────
 
 type Batter = {
   name: string;
@@ -27,69 +31,7 @@ type FallOfWicket = {
   batter: string;
 };
 
-const BATTING: Batter[] = [
-  {
-    name: 'Ruturaj Gaikwad',
-    runs: 61,
-    balls: 40,
-    fours: 7,
-    sixes: 2,
-    sr: '152.50',
-    isNotOut: true,
-  },
-  {
-    name: 'Ajinkya Rahane',
-    runs: 28,
-    balls: 22,
-    fours: 3,
-    sixes: 1,
-    sr: '127.27',
-    dismissal: 'c Kishan b Bumrah',
-  },
-  {
-    name: 'Shivam Dube',
-    runs: 34,
-    balls: 18,
-    fours: 2,
-    sixes: 3,
-    sr: '188.89',
-    isNotOut: true,
-  },
-  {
-    name: 'Devon Conway',
-    runs: 12,
-    balls: 14,
-    fours: 1,
-    sixes: 0,
-    sr: '85.71',
-    dismissal: 'b Coetzee',
-  },
-  {
-    name: 'Moeen Ali',
-    runs: 4,
-    balls: 6,
-    fours: 0,
-    sixes: 0,
-    sr: '66.67',
-    dismissal: 'lbw Chawla',
-  },
-];
-
-const BOWLING: Bowler[] = [
-  { name: 'Jasprit Bumrah', overs: '4', maidens: 1, runs: 22, wickets: 1, economy: '5.50' },
-  { name: 'Gerald Coetzee', overs: '3.2', maidens: 0, runs: 34, wickets: 1, economy: '10.20' },
-  { name: 'Hardik Pandya', overs: '3', maidens: 0, runs: 31, wickets: 0, economy: '10.33' },
-  { name: 'Piyush Chawla', overs: '2', maidens: 0, runs: 19, wickets: 1, economy: '9.50' },
-  { name: 'Akash Madhwal', overs: '2', maidens: 0, runs: 28, wickets: 0, economy: '14.00' },
-];
-
-const FALL_OF_WICKETS: FallOfWicket[] = [
-  { score: '52/1', over: '6.3', batter: 'Conway' },
-  { score: '89/2', over: '10.4', batter: 'Rahane' },
-  { score: '94/3', over: '11.2', batter: 'Moeen Ali' },
-];
-
-const PARTNERSHIP = { runs: 78, balls: 42, batter1: 'Gaikwad', batter2: 'Dube' };
+// ─── Sub-components ──────────────────────────────────────
 
 function ColumnHeader({ labels }: { labels: string[] }) {
   return (
@@ -169,82 +111,160 @@ function BowlerRow({ bowler }: { bowler: Bowler }) {
   );
 }
 
-export default function MatchScorecardTab() {
+function InningsCard({ innings }: { innings: { batLabel: string; bowlLabel: string; score: string; batters: Batter[]; bowlers: Bowler[]; fow: FallOfWicket[]; partnership?: { runs: number; balls: number; bat1: string; bat2: string } } }) {
+  const { batLabel, bowlLabel, score, batters, bowlers, fow, partnership } = innings;
   return (
-    <View className="px-4 mt-4 mb-6">
-      {/* CSK Batting */}
-      <Text className="text-gray-900 dark:text-white text-base font-bold font-heading mb-2">
-        CSK Batting
-      </Text>
+    <>
+      {/* Innings header */}
+      <View className="flex-row items-center justify-between mb-2">
+        <Text className="text-gray-900 dark:text-white text-base font-bold font-heading">
+          {batLabel} Batting
+        </Text>
+        <Text className="text-gray-500 dark:text-gray-400 text-sm font-bold font-heading">
+          {score}
+        </Text>
+      </View>
       <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4">
         <ColumnHeader labels={['BATTER', 'R', 'B', '4s', '6s', 'SR']} />
-        {BATTING.map((b) => (
-          <BatterRow key={b.name} batter={b} />
+        {batters.map((b, i) => (
+          <BatterRow key={`${b.name}-${i}`} batter={b} />
         ))}
       </View>
 
-      {/* Current Partnership */}
-      <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4 items-center">
-        <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-widest font-body mb-1">
-          CURRENT PARTNERSHIP
-        </Text>
-        <Text className="text-primary text-4xl font-bold font-heading">
-          {PARTNERSHIP.runs}
-        </Text>
-        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body mt-1">
-          Runs off {PARTNERSHIP.balls} balls
-        </Text>
-        <View className="flex-row mt-3">
-          <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-3 py-1 mr-2">
-            <Text className="text-gray-900 dark:text-white text-xs font-bold font-body">
-              {PARTNERSHIP.batter1}
-            </Text>
-          </View>
-          <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-3 py-1">
-            <Text className="text-gray-900 dark:text-white text-xs font-bold font-body">
-              {PARTNERSHIP.batter2}
-            </Text>
+      {partnership && (
+        <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4 items-center">
+          <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-widest font-body mb-1">
+            PARTNERSHIP
+          </Text>
+          <Text className="text-primary text-4xl font-bold font-heading">
+            {partnership.runs}
+          </Text>
+          <Text className="text-gray-500 dark:text-gray-400 text-xs font-body mt-1">
+            Runs off {partnership.balls} balls
+          </Text>
+          <View className="flex-row mt-3">
+            <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-3 py-1 mr-2">
+              <Text className="text-gray-900 dark:text-white text-xs font-bold font-body">
+                {partnership.bat1}
+              </Text>
+            </View>
+            <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-3 py-1">
+              <Text className="text-gray-900 dark:text-white text-xs font-bold font-body">
+                {partnership.bat2}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      )}
 
-      {/* MI Bowling */}
+      {/* Bowling */}
       <Text className="text-gray-900 dark:text-white text-base font-bold font-heading mb-2">
-        MI Bowling
+        {bowlLabel} Bowling
       </Text>
       <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4">
         <ColumnHeader labels={['BOWLER', 'O', 'M', 'R', 'W', 'ECO']} />
-        {BOWLING.map((b) => (
-          <BowlerRow key={b.name} bowler={b} />
+        {bowlers.map((b, i) => (
+          <BowlerRow key={`${b.name}-${i}`} bowler={b} />
         ))}
       </View>
 
-      {/* Fall of Wickets */}
-      <Text className="text-gray-900 dark:text-white text-base font-bold font-heading mb-2">
-        Fall of Wickets
-      </Text>
-      <View className="bg-white dark:bg-dark-card rounded-2xl p-4">
-        {FALL_OF_WICKETS.map((fow, i) => (
-          <View
-            key={i}
-            className={`flex-row items-center justify-between py-2.5 ${
-              i < FALL_OF_WICKETS.length - 1 ? 'border-b border-gray-200 dark:border-dark-surface' : ''
-            }`}
-          >
-            <View className="flex-row items-center">
-              <View className="bg-live/20 rounded-full px-2 py-0.5 mr-2">
-                <Text className="text-live text-xs font-bold">{fow.score}</Text>
+      {fow.length > 0 && (
+        <>
+          <Text className="text-gray-900 dark:text-white text-base font-bold font-heading mb-2">
+            Fall of Wickets
+          </Text>
+          <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4">
+            {fow.map((f, i) => (
+              <View
+                key={i}
+                className={`flex-row items-center justify-between py-2.5 ${
+                  i < fow.length - 1 ? 'border-b border-gray-200 dark:border-dark-surface' : ''
+                }`}
+              >
+                <View className="flex-row items-center">
+                  <View className="bg-live/20 rounded-full px-2 py-0.5 mr-2">
+                    <Text className="text-live text-xs font-bold">{f.score}</Text>
+                  </View>
+                  <Text className="text-gray-900 dark:text-white text-sm font-body">
+                    {f.batter}
+                  </Text>
+                </View>
+                <Text className="text-gray-500 dark:text-gray-400 text-xs font-body">
+                  ov {f.over}
+                </Text>
               </View>
-              <Text className="text-gray-900 dark:text-white text-sm font-body">
-                {fow.batter}
-              </Text>
-            </View>
-            <Text className="text-gray-500 dark:text-gray-400 text-xs font-body">
-              ov {fow.over}
-            </Text>
+            ))}
           </View>
-        ))}
+        </>
+      )}
+    </>
+  );
+}
+
+// ─── Main Component ──────────────────────────────────────
+
+type Props = {
+  innings?: LiveInnings[] | null;
+  team1Short: string;
+  team2Short: string;
+};
+
+export default function MatchScorecardTab({ innings, team1Short, team2Short }: Props) {
+  if (!innings || innings.length === 0) {
+    return (
+      <View className="items-center justify-center py-20 px-6">
+        <Icon name="stats-chart-outline" size={48} color="#9E9E9E" />
+        <Text className="text-gray-500 dark:text-gray-400 text-base font-body text-center mt-4">
+          Scorecard not available yet
+        </Text>
+        <Text className="text-gray-500 dark:text-gray-400 text-xs font-body text-center mt-1">
+          Scorecard will appear once the match starts
+        </Text>
       </View>
+    );
+  }
+
+  return (
+    <View className="px-4 mt-4 mb-6">
+      {innings.map((inn, idx) => {
+        const batters: Batter[] = inn.batters.map((b) => ({
+          name: b.name,
+          runs: b.runs,
+          balls: b.balls,
+          fours: b.fours,
+          sixes: b.sixes,
+          sr: b.strikeRate,
+          isNotOut: b.isNotOut,
+          dismissal: b.dismissal || undefined,
+        }));
+        const bowlers: Bowler[] = inn.bowlers.map((b) => ({
+          name: b.name,
+          overs: b.overs,
+          maidens: b.maidens,
+          runs: b.runs,
+          wickets: b.wickets,
+          economy: b.economy,
+        }));
+        const fow: FallOfWicket[] = inn.fallOfWickets;
+        const lastPartnership = inn.partnerships[inn.partnerships.length - 1];
+
+        return (
+          <InningsCard
+            key={idx}
+            innings={{
+              batLabel: inn.batTeamShortName || inn.batTeamName,
+              bowlLabel: inn.bowlTeamShortName || inn.bowlTeamName,
+              score: `${inn.score}/${inn.wickets} (${inn.overs} ov)`,
+              batters,
+              bowlers,
+              fow,
+              partnership: lastPartnership
+                ? { runs: lastPartnership.runs, balls: lastPartnership.balls, bat1: lastPartnership.bat1, bat2: lastPartnership.bat2 }
+                : undefined,
+            }}
+          />
+        );
+      })}
     </View>
   );
 }

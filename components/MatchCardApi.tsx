@@ -62,6 +62,7 @@ export default function MatchCardApi({ match, variant = 'full' }: Props) {
       activeOpacity={0.85}
       onPress={() =>
         navigation.navigate('MatchDetail', {
+          matchId: matchInfo.matchId,
           team1: matchInfo.team1.teamSName,
           team2: matchInfo.team2.teamSName,
         })
@@ -81,7 +82,7 @@ export default function MatchCardApi({ match, variant = 'full' }: Props) {
         {isComplete && (
           <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-2 py-0.5">
             <Text className="text-gray-500 dark:text-gray-400 text-xs font-bold">
-              {matchInfo.stateTitle}
+              {matchInfo.stateTitle || 'COMPLETED'}
             </Text>
           </View>
         )}

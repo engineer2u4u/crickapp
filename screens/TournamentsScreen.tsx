@@ -86,41 +86,32 @@ export default function TournamentsScreen() {
           {ongoingSeries.length === 0 ? (
             <EmptyState icon="radio-outline" message="No leagues are currently running" />
           ) : (
-            <>
-              {/* Featured Tournament */}
-              <TournamentCard series={ongoingSeries[0]} />
+            ongoingSeries.map((s) => {
+              // Find matches for this series from home data
+              const seriesGroup = matches.data.seriesGroups.find(
+                (g) => g.seriesId === s.id,
+              );
+              const seriesMatches = seriesGroup?.matches ?? [];
 
-              {/* Recent Matches */}
-              {matches.data.recent.length > 0 && (
-                <View className="px-4 mt-2">
-                  <View className="flex-row justify-between items-center mb-3">
-                    <View className="flex-row items-center">
-                      <View className="w-1 h-5 bg-primary rounded-full mr-2" />
-                      <Text className="text-gray-900 dark:text-white text-lg font-bold font-heading">
-                        Recent Matches
-                      </Text>
+              return (
+                <View key={s.id} className="mb-2">
+                  <TournamentCard series={s} />
+
+                  {/* Show matches for this league */}
+                  {seriesMatches.length > 0 && (
+                    <View className="px-4 mt-1 mb-2">
+                      {seriesMatches.slice(0, 3).map((m) => (
+                        <MatchCardApi
+                          key={m.matchInfo.matchId}
+                          match={m}
+                          variant="compact"
+                        />
+                      ))}
                     </View>
-                    <TouchableOpacity>
-                      <Text className="text-tertiary text-xs font-bold tracking-widest">
-                        VIEW ALL
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  {matches.data.recent.slice(0, 4).map((m) => (
-                    <MatchCardApi key={m.matchInfo.matchId} match={m} />
-                  ))}
+                  )}
                 </View>
-              )}
-
-              {/* Other Ongoing Leagues */}
-              {ongoingSeries.length > 1 && (
-                <View className="mt-4">
-                  {ongoingSeries.slice(1).map((s) => (
-                    <TournamentCard key={s.id} series={s} />
-                  ))}
-                </View>
-              )}
-            </>
+              );
+            })
           )}
         </>
       )}

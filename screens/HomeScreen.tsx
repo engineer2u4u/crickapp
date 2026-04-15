@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   ScrollView,
   View,
@@ -45,18 +45,10 @@ export default function HomeScreen() {
         />
       }
     >
-      <LiveNowCard
-        match={matches.data.live[0]}
-      />
-      <UpcomingFixtures
-        matches={matches.data.upcoming}
-      />
-      <FinalWhistle
-        match={matches.data.recent[0]}
-      />
-      <InsideEdge
-        stories={news.data}
-      />
+      <LiveNowCard match={matches.data.live[0]} />
+      <UpcomingFixtures matches={matches.data.upcoming} />
+      <FinalWhistle match={matches.data.recent[0]} />
+      <InsideEdge stories={news.data} />
       <WorldHierarchy />
     </ScrollView>
   );

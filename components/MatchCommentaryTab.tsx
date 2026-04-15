@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import type { LiveOver } from '../hooks/useMatchLive';
 
 type BallEvent = {
   ball: string;
@@ -17,123 +19,6 @@ type OverBlock = {
   balls: BallEvent[];
 };
 
-const COMMENTARY: OverBlock[] = [
-  {
-    over: 15,
-    summary: '14 Runs | 1 Wicket',
-    totalScore: '148/4',
-    balls: [
-      {
-        ball: '14.6',
-        bowler: 'Bumrah',
-        batter: 'Gaikwad',
-        result: '1 run',
-        detail: 'Full on off stump, driven to long-on for a single.',
-        type: 'run',
-      },
-      {
-        ball: '14.5',
-        bowler: 'Bumrah',
-        batter: 'Dube',
-        result: 'SIX',
-        detail:
-          'Short ball, Dube rocks back and pulls it over deep mid-wicket! Huge hit into the stands.',
-        type: 'six',
-      },
-      {
-        ball: '14.4',
-        bowler: 'Bumrah',
-        batter: 'Gaikwad',
-        result: 'FOUR',
-        detail:
-          'Overpitched outside off, Gaikwad drives beautifully through the covers. Racing away to the boundary.',
-        type: 'four',
-      },
-      {
-        ball: '14.3',
-        bowler: 'Bumrah',
-        batter: 'Gaikwad',
-        result: '0 runs',
-        detail: 'Good length on middle, defended back to the bowler.',
-        type: 'dot',
-      },
-      {
-        ball: '14.2',
-        bowler: 'Bumrah',
-        batter: 'Dube',
-        result: '2 runs',
-        detail:
-          'Flicked off the pads through square leg, come back for a comfortable two.',
-        type: 'run',
-      },
-      {
-        ball: '14.1',
-        bowler: 'Bumrah',
-        batter: 'Gaikwad',
-        result: '1 run',
-        detail: 'Yorker on the toes, dug out to mid-on for a quick single.',
-        type: 'run',
-      },
-    ],
-  },
-  {
-    over: 14,
-    summary: '8 Runs | 0 Wickets',
-    totalScore: '134/3',
-    balls: [
-      {
-        ball: '13.6',
-        bowler: 'Coetzee',
-        batter: 'Gaikwad',
-        result: 'FOUR',
-        detail:
-          'Short and wide outside off, cut hard past point. No chance for the fielder.',
-        type: 'four',
-      },
-      {
-        ball: '13.5',
-        bowler: 'Coetzee',
-        batter: 'Gaikwad',
-        result: '0 runs',
-        detail: 'Bouncer! Gaikwad ducks under it. Well directed.',
-        type: 'dot',
-      },
-      {
-        ball: '13.4',
-        bowler: 'Coetzee',
-        batter: 'Dube',
-        result: '1 run',
-        detail: 'Pushed to long-off, easy single.',
-        type: 'run',
-      },
-      {
-        ball: '13.3',
-        bowler: 'Coetzee',
-        batter: 'Dube',
-        result: '0 runs',
-        detail: 'Full and straight, defended solidly.',
-        type: 'dot',
-      },
-      {
-        ball: '13.2',
-        bowler: 'Coetzee',
-        batter: 'Dube',
-        result: 'WIDE',
-        detail: 'Down the leg side, umpire signals wide.',
-        type: 'wide',
-      },
-      {
-        ball: '13.1',
-        bowler: 'Coetzee',
-        batter: 'Dube',
-        result: '2 runs',
-        detail: 'Clipped off the hips, runs through square leg.',
-        type: 'run',
-      },
-    ],
-  },
-];
-
 const EVENT_COLORS: Record<string, { bg: string; text: string }> = {
   four: { bg: 'bg-primary/20', text: 'text-primary' },
   six: { bg: 'bg-primary/20', text: 'text-primary' },
@@ -146,26 +31,18 @@ const EVENT_COLORS: Record<string, { bg: string; text: string }> = {
 
 function BallCard({ event }: { event: BallEvent }) {
   const colors = EVENT_COLORS[event.type] ?? EVENT_COLORS.run;
-
   return (
     <View className="flex-row mb-3">
-      {/* Ball number */}
       <View className={`w-10 h-10 rounded-full items-center justify-center mr-3 ${colors.bg}`}>
-        <Text className={`text-xs font-bold ${colors.text}`}>
-          {event.ball}
-        </Text>
+        <Text className={`text-xs font-bold ${colors.text}`}>{event.ball}</Text>
       </View>
-
-      {/* Detail */}
       <View className="flex-1">
         <View className="flex-row items-center mb-1">
           <Text className="text-gray-900 dark:text-white text-sm font-bold font-body">
             {event.bowler} to {event.batter}
           </Text>
           <View className={`ml-2 rounded-full px-2 py-0.5 ${colors.bg}`}>
-            <Text className={`text-xs font-bold ${colors.text}`}>
-              {event.result}
-            </Text>
+            <Text className={`text-xs font-bold ${colors.text}`}>{event.result}</Text>
           </View>
         </View>
         <Text className="text-gray-500 dark:text-gray-400 text-xs font-body leading-4">
@@ -176,67 +53,152 @@ function BallCard({ event }: { event: BallEvent }) {
   );
 }
 
-export default function MatchCommentaryTab() {
+function RunRateBar({ label, value }: { label: string; value: string }) {
+  if (!value) return null;
+  return (
+    <View className="flex-row items-center mr-4">
+      <Text className="text-gray-500 dark:text-gray-400 text-xs font-body mr-1">{label}</Text>
+      <Text className="text-gray-900 dark:text-white text-xs font-bold font-heading">{value}</Text>
+    </View>
+  );
+}
+
+type Props = {
+  matchId: number;
+  commentary: LiveOver[];
+  currentRunRate: string;
+  requiredRunRate: string;
+  team1Short: string;
+  team2Short: string;
+  isLive: boolean;
+  loading: boolean;
+  error: string | null;
+  onGoLive: () => void;
+  onStopLive: () => void;
+};
+
+export default function MatchCommentaryTab({
+  matchId,
+  commentary,
+  currentRunRate,
+  requiredRunRate,
+  isLive,
+  loading,
+  error,
+  onGoLive,
+  onStopLive,
+}: Props) {
+  // Not live yet — show Go Live button
+  if (!isLive && commentary.length === 0) {
+    return (
+      <View className="px-4 mt-6">
+        {matchId > 0 ? (
+          <>
+            <View className="items-center mb-6">
+              <Icon name="chatbubbles-outline" size={48} color="#9E9E9E" />
+              <Text className="text-gray-500 dark:text-gray-400 text-base font-body text-center mt-4">
+                Ball-by-ball commentary
+              </Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-xs font-body text-center mt-1">
+                Start live feed to get real-time commentary updates
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={onGoLive}
+              className="bg-primary flex-row items-center justify-center rounded-xl py-3"
+              activeOpacity={0.8}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <>
+                  <Icon name="radio-outline" size={18} color="#FFFFFF" />
+                  <Text className="text-white text-sm font-bold tracking-wider ml-2">
+                    GO LIVE
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+            {error && (
+              <Text className="text-live text-xs font-body mt-2 text-center">{error}</Text>
+            )}
+          </>
+        ) : (
+          <View className="items-center py-12">
+            <Icon name="chatbubbles-outline" size={48} color="#9E9E9E" />
+            <Text className="text-gray-500 dark:text-gray-400 text-sm font-body text-center mt-4">
+              Commentary not available for this match
+            </Text>
+          </View>
+        )}
+      </View>
+    );
+  }
+
+  const overs: OverBlock[] = commentary.map((o) => ({
+    over: o.over,
+    summary: o.summary,
+    totalScore: o.totalScore,
+    balls: o.balls,
+  }));
+
   return (
     <View className="px-4 mt-4 mb-6">
-      {/* Win Probability */}
-      <View className="bg-white dark:bg-dark-card rounded-2xl p-4 mb-4">
-        <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-widest font-body mb-2">
-          WIN PROBABILITY
-        </Text>
-        <View className="flex-row items-center mb-2">
-          <Text className="text-primary text-sm font-bold font-body w-12">
-            CSK
+      {/* Live controls */}
+      {isLive && (
+        <TouchableOpacity
+          onPress={onStopLive}
+          className="bg-live flex-row items-center justify-center rounded-xl py-2.5 mb-4"
+          activeOpacity={0.8}
+        >
+          <Icon name="stop-circle-outline" size={16} color="#FFFFFF" />
+          <Text className="text-white text-xs font-bold tracking-wider ml-2">
+            STOP LIVE
           </Text>
-          <View className="flex-1 h-3 bg-gray-200 dark:bg-dark-surface rounded-full overflow-hidden mx-2">
-            <View
-              className="h-full bg-primary rounded-full"
-              style={{ width: '68%' }}
-            />
+          <View className="ml-2 flex-row items-center">
+            <View className="w-1.5 h-1.5 rounded-full bg-white mr-1" />
+            <Text className="text-white/70 text-xs font-body">updates every 30s</Text>
           </View>
-          <Text className="text-primary text-sm font-bold font-body w-10 text-right">
-            68%
-          </Text>
-        </View>
-        <View className="flex-row items-center">
-          <Text className="text-gray-500 dark:text-gray-400 text-sm font-bold font-body w-12">MI</Text>
-          <View className="flex-1 h-3 bg-gray-200 dark:bg-dark-surface rounded-full overflow-hidden mx-2">
-            <View
-              className="h-full bg-secondary rounded-full"
-              style={{ width: '32%' }}
-            />
-          </View>
-          <Text className="text-gray-500 dark:text-gray-400 text-sm font-bold font-body w-10 text-right">
-            32%
-          </Text>
-        </View>
-      </View>
+        </TouchableOpacity>
+      )}
 
-      {/* Commentary */}
-      {COMMENTARY.map((over) => (
+      {/* Run Rates */}
+      {(currentRunRate || requiredRunRate) && (
+        <View className="bg-white dark:bg-dark-card rounded-2xl p-3 mb-4 flex-row">
+          <RunRateBar label="CRR" value={currentRunRate} />
+          <RunRateBar label="RRR" value={requiredRunRate} />
+        </View>
+      )}
+
+      {loading && (
+        <View className="py-8 items-center">
+          <ActivityIndicator size="large" color="#1B5E20" />
+        </View>
+      )}
+
+      {/* Commentary overs */}
+      {overs.map((over) => (
         <View key={over.over} className="mb-4">
-          {/* Over Summary */}
           <View className="bg-white dark:bg-dark-card rounded-xl p-3 mb-3 flex-row items-center justify-between">
             <View className="flex-row items-center">
               <View className="bg-primary w-8 h-8 rounded-full items-center justify-center mr-3">
-                <Text className="text-white text-xs font-bold">
-                  {over.over}
-                </Text>
+                <Text className="text-white text-xs font-bold">{over.over}</Text>
               </View>
               <Text className="text-gray-900 dark:text-white text-sm font-bold font-body">
                 {over.summary}
               </Text>
             </View>
-            <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-2.5 py-0.5">
-              <Text className="text-gray-900 dark:text-white text-xs font-bold font-body">
-                {over.totalScore}
-              </Text>
-            </View>
+            {over.totalScore ? (
+              <View className="bg-gray-200 dark:bg-dark-surface rounded-full px-2.5 py-0.5">
+                <Text className="text-gray-900 dark:text-white text-xs font-bold font-body">
+                  {over.totalScore}
+                </Text>
+              </View>
+            ) : null}
           </View>
 
-          {/* Balls */}
-          {over.balls.map((ball) => (
-            <BallCard key={ball.ball} event={ball} />
+          {over.balls.map((ball, idx) => (
+            <BallCard key={`${ball.ball}-${idx}`} event={ball} />
           ))}
         </View>
       ))}

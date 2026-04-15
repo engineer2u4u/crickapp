@@ -1,11 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/RootNavigator';
 import { useColorScheme } from 'nativewind';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function Navbar() {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const iconColor = isDark ? '#FFFFFF' : '#1A1A1A';
@@ -34,7 +38,7 @@ export default function Navbar() {
             color={iconColor}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Reminders')}>
           <Icon name="notifications-outline" size={22} color={iconColor} />
         </TouchableOpacity>
       </View>

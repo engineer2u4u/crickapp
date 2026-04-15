@@ -5,13 +5,15 @@ import BottomTabNavigator from './BottomTabNavigator';
 import TournamentDetailScreen from '../screens/TournamentDetailScreen';
 import MatchDetailScreen from '../screens/MatchDetailScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
+import RemindersScreen from '../screens/RemindersScreen';
 import Navbar from '../components/Navbar';
 
 export type RootStackParamList = {
   Main: undefined;
-  TournamentDetail: { name: string; subtitle?: string };
-  MatchDetail: { team1: string; team2: string };
+  TournamentDetail: { seriesId: number; name: string; subtitle?: string };
+  MatchDetail: { matchId: number; team1: string; team2: string };
   NewsDetail: { storyId: number };
+  Reminders: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -42,6 +44,11 @@ export default function RootNavigator() {
       <Stack.Screen
         name="NewsDetail"
         component={NewsDetailScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="Reminders"
+        component={RemindersScreen}
         options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>

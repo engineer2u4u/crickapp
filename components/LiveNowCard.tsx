@@ -19,7 +19,7 @@ export default function LiveNowCard({ match }: Props) {
     <View className="mx-4 mt-4">
       {/* Section Header */}
       <View className="flex-row items-center justify-between mb-3">
-        <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest font-heading">
+        <Text className="text-primary text-lg font-black italic font-heading">
           LIVE NOW
         </Text>
         {match && (
@@ -50,6 +50,7 @@ export default function LiveNowCard({ match }: Props) {
           activeOpacity={0.85}
           onPress={() =>
             navigation.navigate('MatchDetail', {
+              matchId: match.matchInfo.matchId,
               team1: match.matchInfo.team1.teamSName,
               team2: match.matchInfo.team2.teamSName,
             })

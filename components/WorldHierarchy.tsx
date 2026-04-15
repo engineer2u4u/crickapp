@@ -9,12 +9,12 @@ export default function WorldHierarchy() {
   const [activeFormat, setActiveFormat] = useState('TEST');
   const { data, loading } = useTeamRankings();
 
-  const rankings = data[activeFormat]?.slice(0, 5) ?? [];
+  const rankings = (data as Record<string, any[]>)[activeFormat]?.slice(0, 5) ?? [];
 
   return (
     <View className="mt-6 px-4 mb-6">
       {/* Section Header */}
-      <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
+      <Text className="text-primary text-lg font-black italic mb-3 font-heading">
         WORLD HIERARCHY
       </Text>
 

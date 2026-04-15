@@ -1,189 +1,173 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import type { SquadInfo, PlayerInfo } from '../hooks/useCricketData';
+import { getSquadPlayers } from '../services/api';
+import CImage from './CImage';
 
-type PlayerEntry = {
-  name: string;
-  badge?: string;
+type Props = {
+  seriesId: number;
+  squads: SquadInfo[];
+  loading: boolean;
 };
 
-type RosterCategory = {
-  role: string;
-  players: PlayerEntry[];
-};
-
-type Team = {
-  name: string;
-  short: string;
-  color: string;
-  subtitle: string;
-  roster: RosterCategory[];
-};
-
-const TEAMS: Team[] = [
-  {
-    name: 'CHENNAI SUPER KINGS',
-    short: 'CSK',
-    color: '#FFCB05',
-    subtitle: 'DEFENDING CHAMPIONS • 25 PLAYERS',
-    roster: [
-      {
-        role: 'WICKETKEEPERS',
-        players: [
-          { name: 'MS DHONI', badge: 'CAPTAIN' },
-          { name: 'DEVON CONWAY', badge: 'INTERNATIONAL' },
-        ],
-      },
-      {
-        role: 'BATSMEN',
-        players: [
-          { name: 'RUTURAJ GAIKWAD' },
-          { name: 'AJINKYA RAHANE' },
-          { name: 'SHAIK RASHEED' },
-          { name: 'SAMEER RIZVI' },
-        ],
-      },
-      {
-        role: 'ALL-ROUNDERS',
-        players: [
-          { name: 'RAVINDRA JADEJA' },
-          { name: 'SHIVAM DUBE' },
-          { name: 'MOEEN ALI' },
-          { name: 'DARYL MITCHELL' },
-          { name: 'MITCHELL SANTNER' },
-          { name: 'RACHIN RAVINDRA' },
-        ],
-      },
-      {
-        role: 'BOWLERS',
-        players: [
-          { name: 'DEEPAK CHAHAR' },
-          { name: 'MAHEESH THEEKSHANA' },
-          { name: 'MATHEESHA PATHIRANA' },
-          { name: 'TUSHAR DESHPANDE' },
-          { name: 'SHARDUL THAKUR' },
-          { name: 'MUSTAFIZUR RAHMAN' },
-        ],
-      },
-    ],
-  },
-  {
-    name: 'MUMBAI INDIANS',
-    short: 'MI',
-    color: '#004BA0',
-    subtitle: '5 TIME WINNERS • 24 PLAYERS',
-    roster: [],
-  },
-  {
-    name: 'GUJARAT TITANS',
-    short: 'GT',
-    color: '#1B2A4A',
-    subtitle: '2022 CHAMPIONS • 23 PLAYERS',
-    roster: [],
-  },
-  {
-    name: 'ROYAL CHALLENGERS BANGALORE',
-    short: 'RCB',
-    color: '#EC1C24',
-    subtitle: 'MAIDEN TITLE 2024 • 25 PLAYERS',
-    roster: [],
-  },
-];
-
-function TeamLogo({ short, color }: { short: string; color: string }) {
-  return (
-    <View
-      className="w-10 h-10 rounded-xl items-center justify-center mr-3"
-      style={{ backgroundColor: color }}
-    >
-      <Text className="text-white text-xs font-bold">{short}</Text>
-    </View>
-  );
+function parsePlayer(p: any): PlayerInfo {
+  return {
+    id: p.id ?? '',
+    name: p.name ?? '',
+    role: p.role ?? '',
+    imageId: p.imageId ?? 0,
+    isCaptain: p.captain ?? false,
+    isKeeper: p.keeper ?? false,
+    isHeader: p.isHeader ?? false,
+  };
 }
 
-function TeamSection({ team }: { team: Team }) {
-  const [expanded, setExpanded] = useState(team.short === 'CSK');
-  const hasRoster = team.roster.length > 0;
+function TeamSection({ seriesId, squad }: { seriesId: number; squad: SquadInfo }) {
+  const [expanded, setExpanded] = useState(false);
+  const [players, setPlayers] = useState<PlayerInfo[]>([]);
+  const [loadingPlayers, setLoadingPlayers] = useState(false);
+  const [fetched, setFetched] = useState(false);
+
+  // Fetch players when first expanded
+  useEffect(() => {
+    if (expanded && !fetched) {
+      setLoadingPlayers(true);
+      getSquadPlayers(seriesId, squad.squadId)
+        .then((res: any) => {
+          setPlayers((res.player ?? []).map(parsePlayer));
+          setFetched(true);
+        })
+        .catch(() => {})
+        .finally(() => setLoadingPlayers(false));
+    }
+  }, [expanded, fetched, seriesId, squad.squadId]);
+
+  // Group players by header sections
+  const sections: { header: string; players: PlayerInfo[] }[] = [];
+  let currentSection: { header: string; players: PlayerInfo[] } | null = null;
+
+  for (const p of players) {
+    if (p.isHeader) {
+      currentSection = { header: p.name, players: [] };
+      sections.push(currentSection);
+    } else if (currentSection) {
+      currentSection.players.push(p);
+    } else {
+      if (!sections.length) {
+        currentSection = { header: 'PLAYERS', players: [] };
+        sections.push(currentSection);
+      }
+      currentSection!.players.push(p);
+    }
+  }
 
   return (
     <View className="bg-white dark:bg-dark-card rounded-2xl mb-3 overflow-hidden">
       <TouchableOpacity
         className="flex-row items-center p-4"
-        onPress={() => hasRoster && setExpanded(!expanded)}
-        activeOpacity={hasRoster ? 0.7 : 1}
+        onPress={() => setExpanded(!expanded)}
+        activeOpacity={0.7}
       >
-        <TeamLogo short={team.short} color={team.color} />
+        <CImage
+          imageId={squad.imageId}
+          className="w-10 h-10 rounded-xl mr-3"
+        />
         <View className="flex-1">
           <Text className="text-gray-900 dark:text-white text-sm font-bold font-heading">
-            {team.name}
-          </Text>
-          <Text className="text-gray-500 dark:text-gray-400 text-xs font-body mt-0.5">
-            {team.subtitle}
+            {squad.teamName}
           </Text>
         </View>
-        {hasRoster && (
-          <Icon
-            name={expanded ? 'chevron-up' : 'chevron-down'}
-            size={18}
-            color="#9E9E9E"
-          />
-        )}
+        <Icon
+          name={expanded ? 'chevron-up' : 'chevron-down'}
+          size={18}
+          color="#9E9E9E"
+        />
       </TouchableOpacity>
 
-      {expanded && hasRoster && (
+      {expanded && (
         <View className="px-4 pb-4">
-          {team.roster.map((category) => (
-            <View key={category.role} className="mb-3">
-              {/* Role Header */}
+          {loadingPlayers && (
+            <View className="py-6 items-center">
+              <ActivityIndicator size="small" color="#1B5E20" />
+            </View>
+          )}
+
+          {!loadingPlayers && sections.map((section) => (
+            <View key={section.header} className="mb-3">
               <Text className="text-tertiary text-xs font-bold tracking-widest mb-2 font-body">
-                {category.role}
+                {section.header}
               </Text>
 
-              {/* Players */}
-              {category.players.map((player) => (
+              {section.players.map((player) => (
                 <View
-                  key={player.name}
-                  className="flex-row items-center justify-between py-2 border-b border-gray-200 dark:border-dark-surface"
+                  key={player.id}
+                  className="flex-row items-center py-2 border-b border-gray-200 dark:border-dark-surface"
                 >
-                  <Text className="text-gray-900 dark:text-white text-sm font-body">
-                    {player.name}
-                  </Text>
-                  {player.badge && (
-                    <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-wider font-body">
-                      {player.badge}
+                  {player.imageId ? (
+                    <CImage
+                      imageId={player.imageId}
+                      className="w-8 h-8 rounded-full mr-3"
+                    />
+                  ) : (
+                    <View className="w-8 h-8 bg-gray-200 dark:bg-dark-surface rounded-full mr-3 items-center justify-center">
+                      <Icon name="person-outline" size={14} color="#9E9E9E" />
+                    </View>
+                  )}
+                  <View className="flex-1">
+                    <Text className="text-gray-900 dark:text-white text-sm font-body">
+                      {player.name}
                     </Text>
+                    {player.role ? (
+                      <Text className="text-gray-500 dark:text-gray-400 text-xs font-body">
+                        {player.role}
+                      </Text>
+                    ) : null}
+                  </View>
+                  {player.isCaptain && (
+                    <View className="bg-primary/15 rounded-full px-2 py-0.5">
+                      <Text className="text-primary text-xs font-bold">C</Text>
+                    </View>
+                  )}
+                  {player.isKeeper && (
+                    <View className="bg-secondary/15 rounded-full px-2 py-0.5 ml-1">
+                      <Text className="text-secondary text-xs font-bold">WK</Text>
+                    </View>
                   )}
                 </View>
               ))}
             </View>
           ))}
-
-          <TouchableOpacity className="bg-primary rounded-xl py-3 items-center mt-2">
-            <Text className="text-white text-xs font-bold tracking-wider font-heading">
-              VIEW FULL OFFICIAL SQUAD LIST
-            </Text>
-          </TouchableOpacity>
         </View>
       )}
     </View>
   );
 }
 
-export default function SquadRoster() {
-  return (
-    <View className="px-4 mt-2 mb-4">
-      {/* Header */}
-      <View className="items-center mb-4">
-        <Text className="text-gray-500 dark:text-gray-400 text-xs tracking-widest font-body mb-1">
-          INDIAN PREMIER LEAGUE 2026
-        </Text>
-        <Text className="text-gray-900 dark:text-white text-xl font-bold font-heading text-center">
-          OFFICIAL ROSTERS
+export default function SquadRoster({ seriesId, squads, loading }: Props) {
+  if (loading) {
+    return (
+      <View className="py-12 items-center">
+        <ActivityIndicator size="large" color="#1B5E20" />
+      </View>
+    );
+  }
+
+  if (squads.length === 0) {
+    return (
+      <View className="items-center justify-center py-20">
+        <Icon name="people-outline" size={48} color="#9E9E9E" />
+        <Text className="text-gray-500 dark:text-gray-400 text-sm font-body mt-4 text-center">
+          No squads available for this tournament
         </Text>
       </View>
+    );
+  }
 
-      {TEAMS.map((team) => (
-        <TeamSection key={team.short} team={team} />
+  return (
+    <View className="px-4 mt-2 mb-4">
+      {squads.map((squad) => (
+        <TeamSection key={squad.squadId} seriesId={seriesId} squad={squad} />
       ))}
     </View>
   );

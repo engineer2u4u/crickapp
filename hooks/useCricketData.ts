@@ -7,6 +7,9 @@ import {
   getSeriesList,
   getSeriesArchives,
   getRankings,
+  getSeriesInfo,
+  getSeriesSquads,
+  getSquadPlayers,
 } from '../services/api';
 import {
   extractMatches,
@@ -45,6 +48,39 @@ function useAsync<T>(fetcher: () => Promise<T>, initial: T): AsyncState<T> {
   return { data, loading, error, refresh: run };
 }
 
+// ─── Series-grouped type ─────────────────────────────────
+
+export type SeriesMatchGroup = {
+  seriesId: number;
+  seriesName: string;
+  matches: MatchData[];
+};
+
+function groupBySeries(matches: MatchData[]): SeriesMatchGroup[] {
+  const map = new Map<number, SeriesMatchGroup>();
+  for (const m of matches) {
+    const sid = m.matchInfo.seriesId;
+    if (!map.has(sid)) {
+      map.set(sid, {
+        seriesId: sid,
+        seriesName: m.matchInfo.seriesName,
+        matches: [],
+      });
+    }
+    map.get(sid)!.matches.push(m);
+  }
+  return Array.from(map.values());
+}
+
+// ─── Hooks ───────────────────────────────────────────────
+
+type HomeData = {
+  live: MatchData[];
+  upcoming: MatchData[];
+  recent: MatchData[];
+  seriesGroups: SeriesMatchGroup[];
+};
+
 /** Live + recent + upcoming matches for the home screen */
 export function useHomeMatches() {
   return useAsync(async () => {
@@ -53,12 +89,17 @@ export function useHomeMatches() {
       getRecentMatches().catch(() => ({ typeMatches: [] })),
       getUpcomingMatches().catch(() => ({ typeMatches: [] })),
     ]);
-    return {
-      live: extractMatches(liveRes as any),
-      recent: extractMatches(recentRes as any),
-      upcoming: extractMatches(upcomingRes as any),
-    };
-  }, { live: [] as MatchData[], recent: [] as MatchData[], upcoming: [] as MatchData[] });
+
+    const live = extractMatches(liveRes as any);
+    const recent = extractMatches(recentRes as any);
+    const upcoming = extractMatches(upcomingRes as any);
+
+    // Combine live + upcoming and group by series
+    const all = [...live, ...upcoming];
+    const seriesGroups = groupBySeries(all);
+
+    return { live, recent, upcoming, seriesGroups };
+  }, { live: [], recent: [], upcoming: [], seriesGroups: [] } as HomeData);
 }
 
 /** Top news stories */
@@ -81,8 +122,8 @@ export function useTeamRankings() {
       TEST: (testRes as any).rank ?? [],
       ODI: (odiRes as any).rank ?? [],
       T20: (t20Res as any).rank ?? [],
-    };
-  }, { TEST: [], ODI: [], T20: [] } as Record<string, any[]>);
+    } as { TEST: any[]; ODI: any[]; T20: any[] };
+  }, { TEST: [], ODI: [], T20: [] } as { TEST: any[]; ODI: any[]; T20: any[] });
 }
 
 /** League series list (ongoing + upcoming) */
@@ -99,7 +140,101 @@ export function useFinishedSeries() {
     const res: any = await getSeriesArchives('league');
     const groups = (res.seriesMapProto ?? []) as SeriesGroup[];
     const now = Date.now();
-    // Only return truly finished series
     return groups.flatMap(g => g.series).filter(s => Number(s.endDt) < now);
   }, [] as SeriesItem[]);
+}
+
+// ─── Tournament Detail hooks ─────────────────────────────
+
+export type SeriesMatchDetail = {
+  date: string;
+  matches: MatchData[];
+};
+
+/** Fetch all matches for a series, grouped by date */
+export function useSeriesMatches(seriesId: number) {
+  return useAsync(async () => {
+    const res: any = await getSeriesInfo(seriesId);
+    const details: any[] = res.matchDetails ?? [];
+    const groups: SeriesMatchDetail[] = [];
+
+    for (const item of details) {
+      const map = item.matchDetailsMap;
+      if (!map?.match) continue;
+      groups.push({
+        date: map.key ?? '',
+        matches: (map.match ?? []).map((m: any) => ({
+          matchInfo: {
+            matchId: m.matchInfo?.matchId ?? 0,
+            seriesId: m.matchInfo?.seriesId ?? seriesId,
+            seriesName: m.matchInfo?.seriesName ?? '',
+            matchDesc: m.matchInfo?.matchDesc ?? '',
+            matchFormat: m.matchInfo?.matchFormat ?? '',
+            startDate: m.matchInfo?.startDate ?? '',
+            endDate: m.matchInfo?.endDate ?? '',
+            state: m.matchInfo?.state ?? '',
+            status: m.matchInfo?.status ?? '',
+            stateTitle: m.matchInfo?.stateTitle ?? '',
+            team1: m.matchInfo?.team1 ?? {},
+            team2: m.matchInfo?.team2 ?? {},
+            venueInfo: m.matchInfo?.venueInfo ?? {},
+            currBatTeamId: m.matchInfo?.currBatTeamId,
+            isTimeAnnounced: m.matchInfo?.isTimeAnnounced,
+          },
+          matchScore: m.matchScore,
+        })),
+      });
+    }
+    return groups;
+  }, [] as SeriesMatchDetail[]);
+}
+
+export type SquadInfo = {
+  squadId: number;
+  teamName: string;
+  imageId: number;
+  teamId: number;
+};
+
+/** Fetch squads list for a series */
+export function useSeriesSquads(seriesId: number) {
+  return useAsync(async () => {
+    const res: any = await getSeriesSquads(seriesId);
+    const squads: SquadInfo[] = (res.squads ?? [])
+      .filter((s: any) => s.squadId && !s.isHeader)
+      .map((s: any) => ({
+        squadId: s.squadId,
+        teamName: s.squadType ?? '',
+        imageId: s.imageId ?? 0,
+        teamId: s.teamId ?? 0,
+      }));
+    return squads;
+  }, [] as SquadInfo[]);
+}
+
+export type PlayerInfo = {
+  id: string;
+  name: string;
+  role: string;
+  imageId: number;
+  isCaptain: boolean;
+  isKeeper: boolean;
+  isHeader: boolean;
+};
+
+/** Fetch players for a specific squad */
+export function useSquadPlayers(seriesId: number, squadId: number) {
+  return useAsync(async () => {
+    if (!squadId) return [];
+    const res: any = await getSquadPlayers(seriesId, squadId);
+    return ((res.player ?? []) as any[]).map((p: any) => ({
+      id: p.id ?? '',
+      name: p.name ?? '',
+      role: p.role ?? '',
+      imageId: p.imageId ?? 0,
+      isCaptain: p.captain ?? false,
+      isKeeper: p.keeper ?? false,
+      isHeader: p.isHeader ?? false,
+    })) as PlayerInfo[];
+  }, [] as PlayerInfo[]);
 }

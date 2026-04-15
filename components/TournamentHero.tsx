@@ -4,9 +4,11 @@ import { View, Text } from 'react-native';
 type Props = {
   name: string;
   subtitle?: string;
+  matchesPlayed?: number;
+  totalMatches?: number;
 };
 
-export default function TournamentHero({ name, subtitle }: Props) {
+export default function TournamentHero({ name, subtitle, matchesPlayed, totalMatches }: Props) {
   return (
     <View className="bg-primary mx-4 mt-2 rounded-2xl p-5 overflow-hidden">
       <View className="flex-row items-center">
@@ -30,9 +32,11 @@ export default function TournamentHero({ name, subtitle }: Props) {
         </View>
       </View>
 
-      <Text className="text-accent-light text-xs font-body mt-3">
-        The 4th of 8 weeks of 2026 • 12 Matches, 28 Results, 2 Ties
-      </Text>
+      {totalMatches != null && totalMatches > 0 && (
+        <Text className="text-accent-light text-xs font-body mt-3">
+          {matchesPlayed ?? 0} of {totalMatches} matches completed
+        </Text>
+      )}
     </View>
   );
 }

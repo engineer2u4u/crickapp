@@ -36,6 +36,7 @@ export default function TournamentCard({ series }: Props) {
       activeOpacity={0.85}
       onPress={() =>
         navigation.navigate('TournamentDetail', {
+          seriesId: series.id,
           name: series.name,
           subtitle: `${startDate} - ${endDate}`,
         })

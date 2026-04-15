@@ -1,79 +1,43 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import ScreenHeader from '../components/ScreenHeader';
 import TournamentHero from '../components/TournamentHero';
-import TournamentStats from '../components/TournamentStats';
-import LatestResult from '../components/LatestResult';
-import TournamentLeaderboard from '../components/TournamentLeaderboard';
-import SquadRoster from '../components/SquadRoster';
 import TournamentMatchesTab from '../components/TournamentMatchesTab';
+import SquadRoster from '../components/SquadRoster';
+import MatchCardApi from '../components/MatchCardApi';
+import {
+  useSeriesMatches,
+  useSeriesSquads,
+} from '../hooks/useCricketData';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TournamentDetail'>;
 
-const TABS = ['Overview', 'Matches', 'Squads', 'Stats'];
-
-const PARTICIPATING_TEAMS = [
-  { short: 'CSK', color: '#FFCB05' },
-  { short: 'MI', color: '#004BA0' },
-  { short: 'RCB', color: '#EC1C24' },
-  { short: 'KKR', color: '#3A225D' },
-  { short: 'DC', color: '#004C93' },
-  { short: 'RR', color: '#E73895' },
-  { short: 'GT', color: '#1B2A4A' },
-  { short: 'SRH', color: '#FF822A' },
-];
-
-function OverviewContent({ name, subtitle }: { name: string; subtitle?: string }) {
-  return (
-    <>
-      <TournamentHero name={name} subtitle={subtitle} />
-      <TournamentStats />
-      <LatestResult />
-
-      {/* Participating Squads */}
-      <View className="px-4 mt-4 mb-2">
-        <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
-          PARTICIPATING SQUADS
-        </Text>
-        <View className="flex-row flex-wrap -m-1">
-          {PARTICIPATING_TEAMS.map((team) => (
-            <View key={team.short} className="p-1">
-              <View
-                className="w-12 h-12 rounded-full items-center justify-center"
-                style={{ backgroundColor: team.color }}
-              >
-                <Text className="text-white text-xs font-bold">{team.short}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      <TournamentLeaderboard />
-    </>
-  );
-}
-
-function StatsPlaceholder() {
-  return (
-    <View className="items-center justify-center py-20">
-      <Icon name="stats-chart-outline" size={48} color="#9E9E9E" />
-      <Text className="text-gray-500 dark:text-gray-400 text-base mt-4 font-body">Tournament Stats</Text>
-      <Text className="text-gray-500 dark:text-gray-400 text-xs mt-1 font-body">Coming soon</Text>
-    </View>
-  );
-}
+const TABS = ['Overview', 'Matches', 'Squads'];
 
 export default function TournamentDetailScreen({ route }: Props) {
   const [activeTab, setActiveTab] = useState('Overview');
-  const { name, subtitle } = route.params;
+  const { seriesId, name, subtitle } = route.params;
+  const seriesMatches = useSeriesMatches(seriesId);
+  const squads = useSeriesSquads(seriesId);
+
+  // Get recent + upcoming for overview
+  const allMatches = seriesMatches.data.flatMap((g) => g.matches);
+  const recentMatches = allMatches
+    .filter((m) => m.matchInfo.state === 'Complete')
+    .slice(-3)
+    .reverse();
+  const upcomingMatches = allMatches
+    .filter((m) => m.matchInfo.state !== 'Complete')
+    .slice(0, 3);
+
+  const totalMatches = allMatches.length;
+  const completedMatches = allMatches.filter((m) => m.matchInfo.state === 'Complete').length;
 
   return (
     <View className="flex-1 bg-neutral dark:bg-dark-bg">
-      <ScreenHeader title="TOURNAMENTS" rightIcon="search-outline" />
+      <ScreenHeader title="TOURNAMENT" rightIcon="search-outline" />
 
       {/* Tab Bar */}
       <View className="bg-white dark:bg-dark-card flex-row border-b border-gray-200 dark:border-dark-surface">
@@ -103,11 +67,90 @@ export default function TournamentDetailScreen({ route }: Props) {
         showsVerticalScrollIndicator={false}
       >
         {activeTab === 'Overview' && (
-          <OverviewContent name={name} subtitle={subtitle} />
+          <>
+            <TournamentHero
+              name={name}
+              subtitle={subtitle}
+              matchesPlayed={completedMatches}
+              totalMatches={totalMatches}
+            />
+
+            {/* Participating Squads */}
+            {squads.data.length > 0 && (
+              <View className="px-4 mt-4 mb-2">
+                <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
+                  PARTICIPATING TEAMS
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerClassName="pr-4"
+                >
+                  {squads.data.map((squad) => (
+                    <View key={squad.squadId} className="items-center mr-4">
+                      <View className="w-12 h-12 bg-primary/15 rounded-full items-center justify-center">
+                        <Text className="text-primary text-xs font-bold">
+                          {squad.teamName.split(' ').map((w) => w[0]).join('').slice(0, 3)}
+                        </Text>
+                      </View>
+                      <Text
+                        className="text-gray-500 dark:text-gray-400 text-xs font-body mt-1 w-14 text-center"
+                        numberOfLines={1}
+                      >
+                        {squad.teamName.split(' ').pop()}
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+
+            {/* Recent Results */}
+            {recentMatches.length > 0 && (
+              <View className="px-4 mt-4">
+                <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
+                  RECENT RESULTS
+                </Text>
+                {recentMatches.map((m) => (
+                  <MatchCardApi key={m.matchInfo.matchId} match={m} variant="compact" />
+                ))}
+              </View>
+            )}
+
+            {/* Upcoming */}
+            {upcomingMatches.length > 0 && (
+              <View className="px-4 mt-4">
+                <Text className="text-gray-900 dark:text-white text-sm font-bold tracking-widest mb-3 font-heading">
+                  UPCOMING MATCHES
+                </Text>
+                {upcomingMatches.map((m) => (
+                  <MatchCardApi key={m.matchInfo.matchId} match={m} variant="compact" />
+                ))}
+              </View>
+            )}
+
+            {seriesMatches.loading && (
+              <View className="py-12 items-center">
+                <ActivityIndicator size="large" color="#1B5E20" />
+              </View>
+            )}
+          </>
         )}
-        {activeTab === 'Matches' && <TournamentMatchesTab />}
-        {activeTab === 'Squads' && <SquadRoster />}
-        {activeTab === 'Stats' && <StatsPlaceholder />}
+
+        {activeTab === 'Matches' && (
+          <TournamentMatchesTab
+            matchGroups={seriesMatches.data}
+            loading={seriesMatches.loading}
+          />
+        )}
+
+        {activeTab === 'Squads' && (
+          <SquadRoster
+            seriesId={seriesId}
+            squads={squads.data}
+            loading={squads.loading}
+          />
+        )}
       </ScrollView>
     </View>
   );
