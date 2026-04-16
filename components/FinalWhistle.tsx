@@ -19,7 +19,7 @@ export default function FinalWhistle({ match }: Props) {
     <View className="mt-6 px-4">
       {/* Section Header */}
       <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-primary text-lg font-black italic font-heading">
+        <Text className="text-primary text-lg font-black italic w-screen font-heading">
           FINAL WHISTLE
         </Text>
         {match && (
@@ -78,7 +78,9 @@ export default function FinalWhistle({ match }: Props) {
               </Text>
             </View>
 
-            <Text className="text-gray-500 dark:text-gray-400 font-bold">v</Text>
+            <Text className="text-gray-500 dark:text-gray-400 font-bold">
+              v
+            </Text>
 
             <View className="flex-row items-center">
               <Text className="text-gray-900 dark:text-white text-xl font-bold font-heading">

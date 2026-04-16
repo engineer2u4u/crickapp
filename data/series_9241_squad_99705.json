@@ -1,0 +1,181 @@
+{
+  "player": [{
+    "name": "BATTERS",
+    "isHeader": true
+  }, {
+    "id": "11813",
+    "name": "Ruturaj Gaikwad",
+    "captain": true,
+    "role": "Batsman",
+    "imageId": 781069,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm offbreak"
+  }, {
+    "id": "20538",
+    "name": "Dewald Brevis",
+    "role": "Batsman",
+    "imageId": 846104,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm legbreak"
+  }, {
+    "id": "1431163",
+    "name": "Ayush Mhatre",
+    "role": "Batsman",
+    "imageId": 826116,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm offbreak"
+  }, {
+    "id": "9456",
+    "name": "Matthew Short",
+    "role": "Batsman",
+    "imageId": 619877,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm offbreak"
+  }, {
+    "id": "9429",
+    "name": "Sarfaraz Khan",
+    "role": "Batsman",
+    "imageId": 591955,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm legbreak"
+  }, {
+    "name": "ALL ROUNDERS",
+    "isHeader": true
+  }, {
+    "id": "11195",
+    "name": "Shivam Dube",
+    "role": "Batting Allrounder",
+    "imageId": 846034,
+    "battingStyle": "Left-hand bat",
+    "bowlingStyle": "Right-arm medium"
+  }, {
+    "id": "32835",
+    "name": "Ramakrishna Ghosh",
+    "role": "Batting Allrounder",
+    "imageId": 781087,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm fast-medium"
+  }, {
+    "id": "8512",
+    "name": "Jamie Overton",
+    "role": "Bowling Allrounder",
+    "imageId": 848546,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm fast"
+  }, {
+    "id": "14598",
+    "name": "Anshul Kamboj",
+    "role": "Bowling Allrounder",
+    "imageId": 731465,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm fast-medium"
+  }, {
+    "id": "51417",
+    "name": "Prashant Veer",
+    "role": "Bowling Allrounder",
+    "imageId": 174146,
+    "battingStyle": "Left-hand bat",
+    "bowlingStyle": "Left-arm orthodox"
+  }, {
+    "id": "24391",
+    "name": "Zakary Foulkes",
+    "role": "Bowling Allrounder",
+    "imageId": 829852,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm medium"
+  }, {
+    "id": "19473",
+    "name": "Aman Khan",
+    "role": "Bowling Allrounder",
+    "imageId": 174146,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm fast-medium"
+  }, {
+    "name": "WICKET KEEPERS",
+    "isHeader": true
+  }, {
+    "id": "265",
+    "name": "MS Dhoni",
+    "role": "WK-Batsman",
+    "imageId": 170677,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm medium"
+  }, {
+    "id": "13476",
+    "name": "Urvil Patel",
+    "role": "WK-Batsman",
+    "imageId": 174146,
+    "battingStyle": "Right-hand bat"
+  }, {
+    "id": "8271",
+    "name": "Sanju Samson",
+    "role": "WK-Batsman",
+    "imageId": 846035,
+    "battingStyle": "Right-hand bat"
+  }, {
+    "id": "49557",
+    "name": "Kartik Sharma",
+    "role": "WK-Batsman",
+    "imageId": 174146,
+    "battingStyle": "Right-hand bat"
+  }, {
+    "name": "BOWLERS",
+    "isHeader": true
+  }, {
+    "id": "9746",
+    "name": "Shreyas Gopal",
+    "role": "Bowler",
+    "imageId": 226505,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm legbreak"
+  }, {
+    "id": "19807",
+    "name": "Gurjapneet Singh",
+    "role": "Bowler",
+    "imageId": 174146,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Left-arm fast-medium"
+  }, {
+    "id": "13184",
+    "name": "Mukesh Choudhary",
+    "role": "Bowler",
+    "imageId": 781085,
+    "battingStyle": "Left-hand bat",
+    "bowlingStyle": "Left-arm fast-medium"
+  }, {
+    "id": "15452",
+    "name": "Noor Ahmad",
+    "role": "Bowler",
+    "imageId": 616569,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Left-arm wrist-spin"
+  }, {
+    "id": "8435",
+    "name": "Akeal Hosein",
+    "role": "Bowler",
+    "imageId": 845497,
+    "battingStyle": "Left-hand bat",
+    "bowlingStyle": "Left-arm orthodox"
+  }, {
+    "id": "9067",
+    "name": "Matt Henry",
+    "role": "Bowler",
+    "imageId": 845495,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm fast-medium"
+  }, {
+    "id": "12087",
+    "name": "Rahul Chahar",
+    "role": "Bowler",
+    "imageId": 226225,
+    "battingStyle": "Right-hand bat",
+    "bowlingStyle": "Right-arm legbreak"
+  }, {
+    "id": "13143",
+    "name": "Spencer Johnson",
+    "role": "Bowler",
+    "imageId": 619884,
+    "battingStyle": "Left-hand bat",
+    "bowlingStyle": "Left-arm fast"
+  }]
+}

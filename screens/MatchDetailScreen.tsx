@@ -66,7 +66,7 @@ export default function MatchDetailScreen({ route }: Props) {
 
   return (
     <View className="flex-1 bg-neutral dark:bg-dark-bg">
-      <ScreenHeader title="MATCH CENTER" rightIcon="share-outline" />
+      <ScreenHeader title="MATCH CENTER" />
 
       {/* Match Hero */}
       {match.loading ? (

@@ -84,12 +84,6 @@ export default function WorldHierarchy() {
           ))}
       </View>
 
-      {/* Full Leaderboard Link */}
-      <TouchableOpacity className="items-center mt-4">
-        <Text className="text-tertiary text-xs font-bold tracking-widest">
-          FULL LEADERBOARD
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }

@@ -1,0 +1,62 @@
+{
+  "squads": [{
+    "squadType": "T20",
+    "isHeader": true
+  }, {
+    "squadId": 99705,
+    "squadType": "Chennai Super Kings",
+    "imageId": 860038,
+    "teamId": 58
+  }, {
+    "squadId": 99716,
+    "squadType": "Delhi Capitals",
+    "imageId": 860040,
+    "teamId": 61
+  }, {
+    "squadId": 99727,
+    "squadType": "Gujarat Titans",
+    "imageId": 860068,
+    "teamId": 971
+  }, {
+    "squadId": 99738,
+    "squadType": "Royal Challengers Bengaluru",
+    "imageId": 860056,
+    "teamId": 59
+  }, {
+    "squadId": 99749,
+    "squadType": "Punjab Kings",
+    "imageId": 860084,
+    "teamId": 65
+  }, {
+    "squadId": 99760,
+    "squadType": "Kolkata Knight Riders",
+    "imageId": 860046,
+    "teamId": 63
+  }, {
+    "squadId": 99771,
+    "squadType": "Sunrisers Hyderabad",
+    "imageId": 860066,
+    "teamId": 255
+  }, {
+    "squadId": 99782,
+    "squadType": "Rajasthan Royals",
+    "imageId": 860055,
+    "teamId": 64
+  }, {
+    "squadId": 99793,
+    "squadType": "Lucknow Super Giants",
+    "imageId": 882545,
+    "teamId": 966
+  }, {
+    "squadId": 99804,
+    "squadType": "Mumbai Indians",
+    "imageId": 860053,
+    "teamId": 62
+  }],
+  "appIndex": {
+    "seoTitle": "Squads - Indian Premier League 2026 - Cricbuzz | Cricbuzz.com",
+    "webURL": "www.cricbuzz.com/cricket-series/"
+  },
+  "seriesName": "Indian Premier League 2026",
+  "seriesId": 9241
+}

@@ -110,21 +110,24 @@ function parseMatchInfo(raw: any): LiveMatchInfo | null {
 }
 
 function parseBatter(raw: any): LiveBatter {
+  // Handle both camelCase (old) and lowercase (mcenter) formats
+  const name = raw.batName ?? raw.name ?? '';
+  const outDec = raw.outDec ?? raw.outdec ?? '';
   return {
-    name: raw.batName ?? '',
+    name,
     runs: raw.runs ?? 0,
     balls: raw.balls ?? 0,
     fours: raw.fours ?? 0,
     sixes: raw.sixes ?? 0,
-    strikeRate: raw.strikeRate ?? '0.00',
-    isNotOut: raw.outDec === 'not out' || raw.wicketCode === undefined,
-    dismissal: raw.outDec && raw.outDec !== 'not out' ? raw.outDec : '',
+    strikeRate: raw.strikeRate ?? raw.strkrate ?? '0.00',
+    isNotOut: !outDec || outDec === 'not out' || outDec === 'batting',
+    dismissal: outDec && outDec !== 'not out' && outDec !== 'batting' ? outDec : '',
   };
 }
 
 function parseBowler(raw: any): LiveBowler {
   return {
-    name: raw.bowlName ?? '',
+    name: raw.bowlName ?? raw.name ?? '',
     overs: raw.overs ?? '0',
     maidens: raw.maidens ?? 0,
     runs: raw.runs ?? 0,
@@ -136,6 +139,45 @@ function parseBowler(raw: any): LiveBowler {
 function parseInnings(scoreCard: any[]): LiveInnings[] {
   if (!Array.isArray(scoreCard)) return [];
   return scoreCard.map((inn: any) => {
+    // ─── New flat format (mcenter /hscard) ───
+    if (inn.batsman) {
+      const batters: LiveBatter[] = (inn.batsman ?? []).map(parseBatter);
+      const bowlers: LiveBowler[] = (inn.bowler ?? []).map(parseBowler);
+
+      const fowArr = inn.fow?.fow ?? [];
+      const fallOfWickets: LiveFOW[] = fowArr.map((w: any, i: number) => ({
+        score: `${w.runs ?? 0}/${i + 1}`,
+        over: String(w.overnbr ?? ''),
+        batter: w.batsmanname ?? '',
+      }));
+
+      const partArr = inn.partnership?.partnership ?? [];
+      const partnerships = partArr.map((p: any) => ({
+        runs: p.totalruns ?? 0,
+        balls: p.totalballs ?? 0,
+        bat1: p.bat1name ?? '',
+        bat2: p.bat2name ?? '',
+      }));
+
+      return {
+        batTeamName: inn.batteamname ?? '',
+        batTeamShortName: inn.batteamsname ?? '',
+        bowlTeamName: '',
+        bowlTeamShortName: '',
+        score: inn.score ?? 0,
+        wickets: inn.wickets ?? 0,
+        overs: inn.overs ?? 0,
+        runRate: inn.runrate ?? '0.00',
+        batters,
+        bowlers,
+        fallOfWickets,
+        partnerships,
+        isDeclared: inn.isdeclared ?? false,
+        isFollowOn: inn.isfollowon ?? false,
+      };
+    }
+
+    // ─── Old nested format (batTeamDetails) ───
     const batData = inn.batTeamDetails ?? {};
     const bowlData = inn.bowlTeamDetails ?? {};
     const scoreDetails = inn.scoreDetails ?? {};
@@ -189,30 +231,108 @@ function classifyBallEvent(event: string): LiveCommentaryBall['type'] {
   return 'run';
 }
 
-function parseCommentary(raw: any): { overs: LiveOver[]; crr: string; rrr: string } {
-  const commList = raw?.commentaryList ?? [];
-  const miniscore = raw?.miniscore ?? {};
+function parseBowlerBatter(commtxt: string): { bowler: string; batter: string } {
+  // Extract "Bowler to Batter" from commentary text like "Kamboj to Powell, no run, ..."
+  const match = commtxt?.match(/^(.+?)\s+to\s+(.+?),/);
+  return {
+    bowler: match?.[1] ?? '',
+    batter: match?.[2] ?? '',
+  };
+}
 
+function classifyEventType(eventtype: string, commtxt: string): { type: LiveCommentaryBall['type']; result: string } {
+  const et = (eventtype ?? '').toLowerCase();
+  const txt = (commtxt ?? '').toLowerCase();
+
+  if (et.includes('four') || txt.includes('four')) return { type: 'four', result: 'FOUR' };
+  if (et.includes('six') || txt.includes('six!')) return { type: 'six', result: 'SIX' };
+  if (et.includes('wicket') || txt.includes('out!') || txt.includes('OUT')) return { type: 'wicket', result: 'WICKET' };
+  if (txt.includes('wide')) return { type: 'wide', result: 'WIDE' };
+  if (txt.includes('no-ball') || txt.includes('no ball')) return { type: 'noball', result: 'NO BALL' };
+  if (txt.includes('no run')) return { type: 'dot', result: '0 runs' };
+
+  // Try to extract runs from text like "2 runs" or "1 run"
+  const runsMatch = commtxt?.match(/(\d+)\s+runs?/i);
+  if (runsMatch) return { type: 'run', result: `${runsMatch[1]} run${runsMatch[1] === '1' ? '' : 's'}` };
+
+  return { type: 'dot', result: '0 runs' };
+}
+
+function parseCommentary(raw: any): { overs: LiveOver[]; crr: string; rrr: string } {
+  const miniscore = raw?.miniscore ?? {};
   const crr = String(miniscore.currentRunRate ?? miniscore.crr ?? '');
   const rrr = String(miniscore.requiredRunRate ?? miniscore.rrr ?? '');
 
+  // ─── New format: comwrapper with numbered keys ───
+  const comwrapper = raw?.comwrapper;
+  if (comwrapper && typeof comwrapper === 'object') {
+    const oversMap = new Map<number, LiveCommentaryBall[]>();
+    const overSummaries = new Map<number, { score: number; wickets: number; summary: string }>();
+
+    const entries = Object.values(comwrapper) as any[];
+    for (const entry of entries) {
+      const c = entry?.commentary;
+      if (!c || !c.overnum || c.overnum === 0) continue;
+
+      const overNum = Math.floor(Number(c.overnum));
+      if (!oversMap.has(overNum)) oversMap.set(overNum, []);
+
+      const { bowler, batter } = parseBowlerBatter(c.commtxt ?? '');
+      const { type, result } = classifyEventType(c.eventtype ?? '', c.commtxt ?? '');
+      const detail = (c.commtxt ?? '').replace(/^.+?,\s*/, '').replace(/<[^>]*>/g, '');
+
+      oversMap.get(overNum)!.push({
+        ball: String(c.overnum),
+        bowler,
+        batter,
+        result,
+        detail: detail.charAt(0).toUpperCase() + detail.slice(1),
+        type,
+      });
+
+      if (c.oversep) {
+        overSummaries.set(overNum, {
+          score: c.oversep.score ?? 0,
+          wickets: c.oversep.wickets ?? 0,
+          summary: c.oversep.oversummary ?? '',
+        });
+      }
+    }
+
+    const overs: LiveOver[] = Array.from(oversMap.entries())
+      .sort((a, b) => b[0] - a[0])
+      .map(([overNum, balls]) => {
+        const sep = overSummaries.get(overNum);
+        const runs = sep ? String(sep.score) : '';
+        const wkts = sep ? String(sep.wickets) : '';
+
+        return {
+          over: overNum + 1,
+          summary: sep?.summary
+            ? `${sep.summary.trim()}`
+            : `Over ${overNum + 1}`,
+          totalScore: runs && wkts ? `${runs}/${wkts}` : '',
+          balls,
+        };
+      });
+
+    return { overs, crr, rrr };
+  }
+
+  // ─── Old format: commentaryList array ───
+  const commList = raw?.commentaryList ?? [];
   const oversMap = new Map<number, LiveCommentaryBall[]>();
   const overScores = new Map<number, string>();
 
   for (const c of commList) {
     if (!c.overNumber && c.overNumber !== 0) continue;
     const overNum = Math.floor(Number(c.overNumber));
-    if (!oversMap.has(overNum)) {
-      oversMap.set(overNum, []);
-    }
+    if (!oversMap.has(overNum)) oversMap.set(overNum, []);
 
     const result =
-      c.event === 'FOUR'
-        ? 'FOUR'
-        : c.event === 'SIX'
-          ? 'SIX'
-          : c.event === 'WICKET'
-            ? 'WICKET'
+      c.event === 'FOUR' ? 'FOUR'
+        : c.event === 'SIX' ? 'SIX'
+          : c.event === 'WICKET' ? 'WICKET'
             : `${c.runs ?? 0} run${(c.runs ?? 0) !== 1 ? 's' : ''}`;
 
     oversMap.get(overNum)!.push({
@@ -276,7 +396,8 @@ export function useMatchData(matchId: number): MatchDataState {
     ])
       .then(([infoRes, scorecardRes]) => {
         setMatchInfo(parseMatchInfo(infoRes));
-        setInnings(parseInnings((scorecardRes as any)?.scoreCard));
+        const sc = (scorecardRes as any)?.scoreCard ?? (scorecardRes as any)?.scorecard ?? [];
+        setInnings(parseInnings(sc));
         setError(null);
       })
       .catch((e) => setError(e.message))

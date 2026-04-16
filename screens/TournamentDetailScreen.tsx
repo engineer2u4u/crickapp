@@ -37,7 +37,7 @@ export default function TournamentDetailScreen({ route }: Props) {
 
   return (
     <View className="flex-1 bg-neutral dark:bg-dark-bg">
-      <ScreenHeader title="TOURNAMENT" rightIcon="search-outline" />
+      <ScreenHeader title="TOURNAMENT" />
 
       {/* Tab Bar */}
       <View className="bg-white dark:bg-dark-card flex-row border-b border-gray-200 dark:border-dark-surface">

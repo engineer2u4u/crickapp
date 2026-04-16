@@ -1,0 +1,133 @@
+{
+  "seriesMapProto": [{
+    "date": "2026",
+    "series": [{
+      "id": 9241,
+      "name": "Indian Premier League 2026",
+      "startDt": "1774656000000",
+      "endDt": "1780185600000",
+      "thumborImageId": 887317
+    }, {
+      "id": 11537,
+      "name": "Pakistan Super League 2026",
+      "startDt": "1774483200000",
+      "endDt": "1777766400000",
+      "thumborImageId": 917945
+    }, {
+      "id": 11660,
+      "name": "Battle of Bats In USA, 2026",
+      "startDt": "1773446400000",
+      "endDt": "1773446400000",
+      "thumborImageId": 880591
+    }, {
+      "id": 11671,
+      "name": "Legends League Cricket 2026",
+      "startDt": "1773187200000",
+      "endDt": "1774569600000",
+      "thumborImageId": 883799
+    }, {
+      "id": 11471,
+      "name": "World Legends Pro T20 League 2026",
+      "startDt": "1769385600000",
+      "endDt": "1770163200000",
+      "thumborImageId": 836903
+    }]
+  }, {
+    "date": "2025",
+    "series": [{
+      "id": 11328,
+      "name": "Bangladesh Premier League 2025-26",
+      "startDt": "1766707200000",
+      "endDt": "1769126400000",
+      "thumborImageId": 379130
+    }, {
+      "id": 10763,
+      "name": "Super Smash 2025-26",
+      "startDt": "1766707200000",
+      "endDt": "1769817600000",
+      "thumborImageId": 379130
+    }, {
+      "id": 10394,
+      "name": "SA20, 2025-26",
+      "startDt": "1766707200000",
+      "endDt": "1769299200000",
+      "thumborImageId": 835906
+    }, {
+      "id": 10289,
+      "name": "Big Bash League 2025-26",
+      "startDt": "1765670400000",
+      "endDt": "1769299200000",
+      "thumborImageId": 798650
+    }, {
+      "id": 10884,
+      "name": "International League T20, 2025-26",
+      "startDt": "1764633600000",
+      "endDt": "1767484800000",
+      "thumborImageId": 813363
+    }, {
+      "id": 11119,
+      "name": "Abu Dhabi T10 League 2025",
+      "startDt": "1763424000000",
+      "endDt": "1764460800000",
+      "thumborImageId": 379130
+    }, {
+      "id": 11190,
+      "name": "Nepal Premier League 2025",
+      "startDt": "1763337600000",
+      "endDt": "1765584000000",
+      "thumborImageId": 379130
+    }, {
+      "id": 11146,
+      "name": "ACC Mens Asia Cup Rising Stars 2025",
+      "startDt": "1763078400000",
+      "endDt": "1763856000000",
+      "thumborImageId": 379130
+    }, {
+      "id": 11122,
+      "name": "Hong Kong Sixes 2025",
+      "startDt": "1762473600000",
+      "endDt": "1762646400000",
+      "thumborImageId": 379130
+    }, {
+      "id": 11032,
+      "name": "CSA T20 Challenge 2025",
+      "startDt": "1761696000000",
+      "endDt": "1764460800000",
+      "thumborImageId": 379130
+    }, {
+      "id": 11110,
+      "name": "CSA T20 Knock Out Competition 2025",
+      "startDt": "1761264000000",
+      "endDt": "1763942400000",
+      "thumborImageId": 379130
+    }, {
+      "id": 10620,
+      "name": "Kerala Cricket League 2025",
+      "startDt": "1755734400000",
+      "endDt": "1757116800000",
+      "thumborImageId": 379130
+    }, {
+      "id": 10735,
+      "name": "Uttar Pradesh Premier League 2025",
+      "startDt": "1755388800000",
+      "endDt": "1757116800000",
+      "thumborImageId": 379130
+    }, {
+      "id": 9575,
+      "name": "Caribbean Premier League 2025",
+      "startDt": "1755129600000",
+      "endDt": "1758412800000",
+      "thumborImageId": 379130
+    }, {
+      "id": 10515,
+      "name": "Maharaja Trophy KSCA T20 2025",
+      "startDt": "1754870400000",
+      "endDt": "1756339200000",
+      "thumborImageId": 379130
+    }]
+  }],
+  "appIndex": {
+    "seoTitle": "Current Running Cricket Series - Cricbuzz | Cricbuzz.com",
+    "webURL": "www.cricbuzz.com/cricket-series/"
+  }
+}

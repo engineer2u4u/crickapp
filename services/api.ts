@@ -1,6 +1,8 @@
-import { RAPIDAPI_KEY, RAPIDAPI_HOST } from '@env';
+import { RAPIDAPI_KEY, RAPIDAPI_HOST, IS_DEV } from '@env';
+import { mockRequest } from './mockData';
 
 const BASE_URL = `https://${RAPIDAPI_HOST}`;
+const isDev = IS_DEV === 'true';
 
 const headers: Record<string, string> = {
   'Content-Type': 'application/json',
@@ -14,6 +16,9 @@ const imgHeaders: Record<string, string> = {
 };
 
 async function request<T>(endpoint: string): Promise<T> {
+  if (isDev) {
+    return mockRequest<T>(endpoint);
+  }
   const res = await fetch(`${BASE_URL}${endpoint}`, { headers });
   if (!res.ok) {
     throw new Error(`API ${res.status}: ${endpoint}`);
