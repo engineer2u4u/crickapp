@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   View,
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -15,6 +16,7 @@ import MatchInfoTab from '../components/MatchInfoTab';
 import MatchScorecardTab from '../components/MatchScorecardTab';
 import MatchCommentaryTab from '../components/MatchCommentaryTab';
 import { useMatchData, useCommentaryLive } from '../hooks/useMatchLive';
+import { setReminder, cancelReminder, isReminderSet } from '../services/reminders';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MatchDetail'>;
 
@@ -28,6 +30,50 @@ export default function MatchDetailScreen({ route }: Props) {
   const match = useMatchData(matchId);
   // Commentary: only fetches when user taps Go Live
   const comm = useCommentaryLive(matchId);
+
+  // Reminder state for upcoming matches
+  const isUpcoming = match.matchInfo
+    ? match.matchInfo.state !== 'Complete' && match.matchInfo.state !== 'In Progress'
+    : false;
+  const [reminded, setReminded] = useState(false);
+
+  useEffect(() => {
+    if (matchId && isUpcoming) {
+      isReminderSet(matchId).then(setReminded);
+    }
+  }, [matchId, isUpcoming]);
+
+  async function handleReminder() {
+    if (reminded) {
+      Alert.alert('Cancel Reminder', `Remove reminder for ${team1} vs ${team2}?`, [
+        { text: 'Keep', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: async () => {
+            await cancelReminder(matchId);
+            setReminded(false);
+          },
+        },
+      ]);
+      return;
+    }
+
+    const info = match.matchInfo;
+    const success = await setReminder({
+      matchId,
+      team1: info?.team1.shortName || team1,
+      team2: info?.team2.shortName || team2,
+      seriesName: info?.matchDescription || '',
+      matchDesc: info?.matchFormat || '',
+      startDate: String(Date.now() + 3600000), // fallback
+    });
+
+    if (success) {
+      setReminded(true);
+      Alert.alert('Reminder Set!', `You'll be notified 15 min before ${team1} vs ${team2}.`);
+    }
+  }
 
   const firstInnings = match.innings[0];
   const secondInnings = match.innings[1];
@@ -75,6 +121,28 @@ export default function MatchDetailScreen({ route }: Props) {
         </View>
       ) : (
         <MatchHero {...heroProps} />
+      )}
+
+      {/* Remind button for upcoming matches */}
+      {isUpcoming && !match.loading && (
+        <View className="px-4 mt-3">
+          <TouchableOpacity
+            onPress={handleReminder}
+            className={`flex-row items-center justify-center rounded-xl py-2.5 ${
+              reminded ? 'bg-tertiary' : 'bg-primary'
+            }`}
+            activeOpacity={0.8}
+          >
+            <Icon
+              name={reminded ? 'notifications' : 'notifications-outline'}
+              size={16}
+              color="#FFFFFF"
+            />
+            <Text className="text-white text-xs font-bold tracking-wider ml-2">
+              {reminded ? 'REMINDER SET' : 'SET REMINDER'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
 
       {/* Tab Bar */}
